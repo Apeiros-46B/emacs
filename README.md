@@ -3,15 +3,15 @@
 my emacs configuration  
 thanks to [nano-theme](https://github.com/rougier/nano-theme) and [nano-modeline](https://github.com/rougier/nano-modeline) for making minimal emacs theming so much easier
 
+## install
+
+`git clone https://github.com/Apeiros-46B/emacs ~/.emacs.d`
+
 ## screenshots
 
 ![start](assets/start.png)
 ![ivy](assets/ivy.png)
 ![org](assets/org.png)
-
-## install
-
-`git clone https://github.com/Apeiros-46B/emacs ~/.emacs.d`
 
 ## packages
 
