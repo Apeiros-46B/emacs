@@ -2,7 +2,7 @@
 (defkm 'normal "WW" 'save-buffer)
 (defkm 'normal "C-q" 'evil-visual-block)
 (defkm '(normal visual) "C-j" 'evil-join)
-(defkm 'normal "C-J" 'eval-print-last-sexp)
+(defkm 'normal "C-S-j" 'eval-print-last-sexp)
 
 ; buffers
 (defkm 'normal "X" 'kill-current-buffer)
