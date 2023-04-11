@@ -35,11 +35,11 @@
     (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.6))
 
     ; {{{ custom faces
-    (set-face-attribute 'org-level-1 nil :foreground (getcol 'green))
-    (set-face-attribute 'org-level-2 nil :foreground (getcol 'aqua))
-    (set-face-attribute 'org-level-3 nil :foreground (getcol 'blue))
-    (set-face-attribute 'org-level-4 nil :foreground (getcol 'purple))
-    (set-face-attribute 'org-level-5 nil :foreground (getcol 'red))
+    (set-face-attribute 'org-level-1 nil :foreground (getcol 'green)  :weight 'bold)
+    (set-face-attribute 'org-level-2 nil :foreground (getcol 'aqua)   :weight 'bold)
+    (set-face-attribute 'org-level-3 nil :foreground (getcol 'blue)   :weight 'bold)
+    (set-face-attribute 'org-level-4 nil :foreground (getcol 'purple) :weight 'bold)
+    (set-face-attribute 'org-level-5 nil :foreground (getcol 'red)    :weight 'bold)
     ; }}}
 
     ; {{{ org-agenda
