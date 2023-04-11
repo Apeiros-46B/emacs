@@ -158,7 +158,7 @@
       (nano-modeline-render (plist-get (cdr (assoc 'org-agenda-mode nano-modeline-mode-formats)) :icon)
         "org-agenda"
         (concat "(" (format-time-string "%Y.%m.%d:%u") ")")
-        (if (nano-modeline-org-clock-mode-p) (concat org-mode-line-string "*"))))
+        (if (nano-modeline-org-clock-mode-p) (concat org-mode-line-string "*") "")))
     ; }}}
     ; }}}
 
