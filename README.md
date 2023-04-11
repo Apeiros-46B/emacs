@@ -5,7 +5,9 @@ thanks to [nano-theme](https://github.com/rougier/nano-theme) and [nano-modeline
 
 ## install
 
-`git clone https://github.com/Apeiros-46B/emacs ~/.emacs.d`
+- `git clone https://github.com/Apeiros-46B/emacs ~/.emacs.d`
+- launch emacs
+- wait for the straight.el bootstrap and package install (loading is a blank screen for aesthetic reasons)
 
 ## screenshots
 
