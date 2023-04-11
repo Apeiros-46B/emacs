@@ -113,10 +113,13 @@
     (nano-modeline-prefix 'status)
     (nano-modeline-prefix-padding t)
     (nano-modeline-display-tab-number t)
+
+
     ; }}}
 
   :config
-    ; {{{ override default modeline function
+    ; {{{ override default modeline functions
+    ; {{{ default mode
     (defun nano-modeline-default-mode (&optional icon)
       (let ((icon (or icon (plist-get (cdr (assoc 'text-mode nano-modeline-mode-formats)) :icon)))
           ; {{{ buffer name (taking into account narrowed bufs)
@@ -148,6 +151,15 @@
           (concat "(" mode-name (if branch (concat ", " branch) "") ")")
           position)))
         ; }}}
+    ; }}}
+
+    ; {{{ agenda mode
+    (defun nano-modeline-org-agenda-mode ()
+      (nano-modeline-render (plist-get (cdr (assoc 'org-agenda-mode nano-modeline-mode-formats)) :icon)
+        "org-agenda"
+        (concat "(" (format-time-string "%Y.%m.%d:%u") ")")
+        (if (nano-modeline-org-clock-mode-p) (concat org-mode-line-string "*"))))
+    ; }}}
     ; }}}
 
     ; {{{ custom faces
