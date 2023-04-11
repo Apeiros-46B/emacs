@@ -7,4 +7,4 @@ thanks to [nano-theme](https://github.com/rougier/nano-theme) and [nano-modeline
 
 ![start](assets/start.png)
 ![ivy](assets/ivy.png)
-![org-modern](assets/org-modern.png)
+![org](assets/org.png)
