@@ -35,6 +35,10 @@
     (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.6))
 
     ; {{{ custom faces
+    (set-face-attribute 'org-block            nil :background (getcol 'bg1))
+    (set-face-attribute 'org-block-begin-line nil :underline nil)
+    (set-face-attribute 'org-block-end-line   nil :overline nil)
+
     (set-face-attribute 'org-level-1 nil :foreground (getcol 'green)  :weight 'bold)
     (set-face-attribute 'org-level-2 nil :foreground (getcol 'aqua)   :weight 'bold)
     (set-face-attribute 'org-level-3 nil :foreground (getcol 'blue)   :weight 'bold)
