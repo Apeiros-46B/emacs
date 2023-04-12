@@ -17,20 +17,22 @@ thanks to [nano-theme](https://github.com/rougier/nano-theme) and [nano-modeline
 
 ## packages
 
-- straight
-- use-package
-- general
-- nano-theme
-- nano-modeline
-- evil
-  - goto-chg
-  - evil-numbers
-  - evil-surround
-  - evil-org
-- hop
-- counsel
-- ivy
-- smex
-- org
-- org-roam
-- org-modern
+- `straight`
+- `use-package`
+- `general`
+- `nano-theme`
+- `nano-modeline`
+- `evil`
+  - `goto-chg`
+  - `evil-numbers`
+  - `evil-surround`
+  - `evil-org`
+- `hop`
+- `ivy`
+  - `counsel`
+- `smex`
+- `org`
+  - `org-roam`
+  - `org-modern`
+  - `org-appear`
+  - `org-fragtog`
