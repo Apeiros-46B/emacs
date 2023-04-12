@@ -209,19 +209,6 @@
     ; load hook
     (add-hook 'org-mode-hook #'org-appear-mode)
 
-    ; {{{ evil hook(s)
-    (add-hook 'org-mode-hook
-      (lambda ()
-        (add-hook 'evil-replace-state-entry-hook   #'org-appear-manual-start nil t)
-        (add-hook 'evil-replace-state-exit-hook    #'org-appear-manual-stop  nil t)
-        (add-hook 'evil-insert-state-entry-hook    #'org-appear-manual-start nil t)
-        (add-hook 'evil-insert-state-exit-hook     #'org-appear-manual-stop  nil t)
-        (add-hook 'evil-visual-state-entry-hook    #'org-appear-manual-start nil t)
-        (add-hook 'evil-visual-state-exit-hook     #'org-appear-manual-stop  nil t)
-        (add-hook 'evil-emacs-state-entry-hook     #'org-appear-manual-start nil t)
-        (add-hook 'evil-emacs-state-exit-hook      #'org-appear-manual-stop  nil t)))
-    ; }}}
-
   :custom
     ; {{{ custom options
     (org-appear-autoemphasis   t)
@@ -231,6 +218,6 @@
     (org-appear-autokeywords   nil)
     (org-appear-inside-latex   nil)
     (org-appear-delay          0)
-    (org-appear-trigger        'manual))
+    (org-appear-trigger        'always))
     ; }}}
 ; }}}
