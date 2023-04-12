@@ -27,7 +27,7 @@
     (org-agenda-files `(,(file-truename "~/org/agenda")))
 
     ; don't clutter my fs with latex image cache
-    (org-preview-latex-image-directory (concat (file-truename user-emacs-directory) "ltximg/" (buffer-file-name)))
+    (org-preview-latex-image-directory (concat (file-truename user-emacs-directory) "cache/ltximg/" (buffer-file-name)))
 
     (org-log-into-drawer t)
     (org-log-done 'time)

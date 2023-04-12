@@ -3,11 +3,6 @@
 
 ; main package
 (use-package evil
-  :custom
-    (evil-insert-state-message nil)
-    (evil-visual-state-message nil)
-    (evil-replace-state-message nil)
-
   :config
     ; undo system
     (evil-set-undo-system 'undo-redo)
@@ -15,15 +10,19 @@
     ; fix keybinds in agenda
     (evil-set-initial-state 'org-agenda-mode 'normal)
 
+    ; :set noshowmode
+    (setq evil-insert-state-message nil
+          evil-visual-state-message nil
+          evil-replace-state-message nil)
+
     ; {{{ state indicator via cursor shape & color
-    (setq
-      evil-emacs-state-cursor    `(box        ,(getcol 'red   ))
-      evil-normal-state-cursor   `( box       ,(getcol 'fg1   ))
-      evil-insert-state-cursor   `((bar . 2)  ,(getcol 'blue  ))
-      evil-visual-state-cursor   `( box       ,(getcol 'purple))
-      evil-motion-state-cursor   `( box       ,(getcol 'fg2   ))
-      evil-replace-state-cursor  `((hbar . 2) ,(getcol 'red   ))
-      evil-operator-state-cursor `((hbar . 2) ,(getcol 'green )))
+    (setq evil-emacs-state-cursor    `(box        ,(getcol 'red   ))
+          evil-normal-state-cursor   `( box       ,(getcol 'fg1   ))
+          evil-insert-state-cursor   `((bar . 2)  ,(getcol 'blue  ))
+          evil-visual-state-cursor   `( box       ,(getcol 'purple))
+          evil-motion-state-cursor   `( box       ,(getcol 'fg2   ))
+          evil-replace-state-cursor  `((hbar . 2) ,(getcol 'red   ))
+          evil-operator-state-cursor `((hbar . 2) ,(getcol 'green )))
     ; }}}
 
     ; activate
