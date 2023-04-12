@@ -3,6 +3,11 @@
 
 ; main package
 (use-package evil
+  :custom
+    (evil-insert-state-message nil)
+    (evil-visual-state-message nil)
+    (evil-replace-state-message nil)
+
   :config
     ; undo system
     (evil-set-undo-system 'undo-redo)

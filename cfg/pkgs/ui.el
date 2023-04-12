@@ -113,12 +113,10 @@
     (nano-modeline-prefix 'status)
     (nano-modeline-prefix-padding t)
     (nano-modeline-display-tab-number t)
-
-
     ; }}}
 
   :config
-    ; {{{ override default modeline functions
+    ; {{{ override nano-modeline functions
     ; {{{ default mode
     (defun nano-modeline-default-mode (&optional icon)
       (let ((icon (or icon (plist-get (cdr (assoc 'text-mode nano-modeline-mode-formats)) :icon)))
@@ -160,6 +158,11 @@
         (concat "(" (format-time-string "%Y.%m.%d:%u") ")")
         (if (nano-modeline-org-clock-mode-p) (concat org-mode-line-string "*") "")))
     ; }}}
+    ; }}}
+
+    ; {{{ override default modeline faces
+    (set-face-attribute 'mode-line          nil :background (getcol 'bg3) :foreground (getcol 'fg2) :box nil)
+    (set-face-attribute 'mode-line-inactive nil :background (getcol 'bg2) :foreground (getcol 'fg2) :box nil)
     ; }}}
 
     ; {{{ custom faces
