@@ -21,6 +21,7 @@
     ; folding/cycling
     (defkm 'normal 'org-mode-map "za" 'org-cycle)
     (defkm 'normal 'org-mode-map "zA" 'org-global-cycle)
+    (defkm 'normal 'org-mode-map "zM" 'org-global-cycle)
     (defkm 'normal 'org-mode-map "zR" 'org-show-all)
     (defkm 'normal 'org-mode-map "zx" 'org-set-startup-visibility)
     ; }}}
