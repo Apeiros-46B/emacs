@@ -1,5 +1,5 @@
 ; {{{ wrapping
-(setq-default fill-column 90)
+(setq-default fill-column 88)
 (global-visual-line-mode t)
 (add-hook 'text-mode-hook #'auto-fill-mode) ; hard wrap
 (ldr-defkm "Twh" 'auto-fill-mode)
