@@ -99,7 +99,7 @@
 ; bolds & italics
 (set-face-attribute 'default nil :foreground (getcol 'fg1) :weight 'regular)
 (set-face-attribute 'bold    nil :foreground (getcol 'fg1) :weight 'bold)
-(set-face-attribute 'italic  nil :foreground (getcol 'fg1) :weight 'semilight :slant 'italic)
+(set-face-attribute 'italic  nil :foreground (getcol 'fg1) :weight 'regular :slant 'italic)
 ; }}}
 ; END THEME
 
