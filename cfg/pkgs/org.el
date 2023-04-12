@@ -30,6 +30,8 @@
     (org-preview-latex-image-directory (concat (file-truename user-emacs-directory) "ltximg/" (buffer-file-name)))
 
     (org-log-into-drawer t)
+    (org-log-done 'time)
+
     (org-adapt-indentation t)
     (org-return-follows-link t)
     (org-cycle-separator-lines 2)
