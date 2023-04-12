@@ -4,10 +4,15 @@
 
   :init
     ; {{{ custom keymaps
-    (ldr-defkm "oa" 'org-agenda) ; agenda should be always accessible
-    (ldr-defkm 'org-mode-map "ol" 'org-latex-preview)
+    (ldr-defkm "a" 'org-agenda)
+    (ldr-defkm "c" 'org-capture)
+
     (ldr-defkm 'org-mode-map "op" 'org-priority)
     (ldr-defkm 'org-mode-map "ot" 'org-time-stamp)
+
+    ; link creation
+    (ldr-defkm "l" 'org-store-link)
+    (ldr-defkm 'org-mode-map "L" 'org-insert-link)
 
     (defkm '(normal visual) 'org-mode-map "C-SPC" 'org-toggle-checkbox)
     (defkm '(normal visual) 'org-mode-map "gt" 'org-todo)
