@@ -10,10 +10,10 @@
 (setq-default mode-line-format nil)
 
 ; config reloading
-(defun reload-init-file ()
-  (interactive)
-  (load-file user-init-file))
-(global-set-key (kbd "<f5>") 'reload-init-file)
+(global-set-key (kbd "<f5>")
+  (lambda ()
+    (interactive)
+    (load-file user-init-file)))
 
 ; {{{ straight.el
 (defvar bootstrap-version)

@@ -1,3 +1,4 @@
+; {{{ org
 (use-package org
   :mode ("\\.org\\'" . org-mode)
 
@@ -21,7 +22,12 @@
 
   :custom
     ; {{{ custom options
+    ; {{{ functionality
     (org-dir (file-truename "~/org/"))
+    (org-agenda-files `(,(file-truename "~/org/agenda")))
+
+    ; don't clutter my fs with latex image cache
+    (org-preview-latex-image-directory (concat (file-truename user-emacs-directory) "ltximg/" (buffer-file-name)))
 
     (org-log-into-drawer t)
     (org-adapt-indentation t)
@@ -34,7 +40,24 @@
     (org-priority-lowest  8)
     (org-priority-default 3)
 
-    (org-agenda-files `(,(file-truename "~/org/agenda")))
+    (org-auto-align-tags nil)
+    (org-tags-column 0)
+    (org-catch-invisible-edits 'show-and-error)
+    (org-special-ctrl-a/e t)
+    (org-insert-heading-respect-content t)
+    ; }}}
+
+    ; {{{ visuals
+    (org-hide-emphasis-markers t)
+    (org-link-descriptive t)
+    (org-pretty-entities t)
+    (org-ellipsis " ↪ ")
+
+    (org-agenda-tags-column 0)
+    (org-agenda-block-separator ?─)
+    (org-agenda-time-grid '((daily today require-timed) (800 1000 1200 1400 1600 1800 2000 2200) " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄"))
+    (org-agenda-current-time-string "now ┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
+    ; }}}
     ; }}}
 
   :config
@@ -76,7 +99,9 @@
          '(or (apeiros/org-skip-subtree-if-priority 1)
             (org-agenda-skip-if nil '(scheduled deadline)))))))))))
     ; }}}
+; }}}
 
+; {{{ org-roam
 (use-package org-roam
   :after org
 
@@ -97,7 +122,9 @@
     (setq org-roam-node-display-template (concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
     (org-roam-db-autosync-mode)
     (require 'org-roam-protocol))
+; }}}
 
+; {{{ org-modern
 (use-package org-modern
   :after org
   :commands org-modern-mode org-modern-agenda global-org-modern-mode
@@ -108,23 +135,6 @@
     (add-hook 'org-agenda-finalize-hook #'org-modern-agenda)
 
   :custom
-    ; {{{ fix org options
-    (org-auto-align-tags nil)
-    (org-tags-column 0)
-    (org-catch-invisible-edits 'show-and-error)
-    (org-special-ctrl-a/e t)
-    (org-insert-heading-respect-content t)
-
-    (org-hide-emphasis-markers t)
-    (org-pretty-entities t)
-    (org-ellipsis " ↪ ")
-
-    (org-agenda-tags-column 0)
-    (org-agenda-block-separator ?─)
-    (org-agenda-time-grid '((daily today require-timed) (800 1000 1200 1400 1600 1800 2000) " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄"))
-    (org-agenda-current-time-string "now ┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
-    ; }}}
-
     ; {{{ custom options
     (org-modern-star '("◉" " ◈" "  ◉" "   ◈" "    ◉"))
     (org-modern-timestamp '(" %Y.%m.%d:%u " . " %H:%M "))
@@ -182,3 +192,43 @@
 
     (set-face-attribute 'org-modern-horizontal-rule nil :strike-through (getcol 'bg4) :foreground (getcol 'bg1)))
     ; }}}
+;}}}
+
+; {{{ org-fragtog + org-appear
+; :hook STILL refuses to work >:(
+(use-package org-fragtog
+  :commands org-fragtog-mode
+  :init (add-hook 'org-mode-hook #'org-fragtog-mode))
+
+(use-package org-appear
+  :commands org-appear-mode
+
+  :init
+    ; load hook
+    (add-hook 'org-mode-hook #'org-appear-mode)
+
+    ; {{{ evil hook(s)
+    (add-hook 'org-mode-hook
+      (lambda ()
+        (add-hook 'evil-replace-state-entry-hook   #'org-appear-manual-start nil t)
+        (add-hook 'evil-replace-state-exit-hook    #'org-appear-manual-stop  nil t)
+        (add-hook 'evil-insert-state-entry-hook    #'org-appear-manual-start nil t)
+        (add-hook 'evil-insert-state-exit-hook     #'org-appear-manual-stop  nil t)
+        (add-hook 'evil-visual-state-entry-hook    #'org-appear-manual-start nil t)
+        (add-hook 'evil-visual-state-exit-hook     #'org-appear-manual-stop  nil t)
+        (add-hook 'evil-emacs-state-entry-hook     #'org-appear-manual-start nil t)
+        (add-hook 'evil-emacs-state-exit-hook      #'org-appear-manual-stop  nil t)))
+    ; }}}
+
+  :custom
+    ; {{{ custom options
+    (org-appear-autoemphasis   t)
+    (org-appear-autolinks      t)
+    (org-appear-autosubmarkers t)
+    (org-appear-autoentities   t)
+    (org-appear-autokeywords   nil)
+    (org-appear-inside-latex   nil)
+    (org-appear-delay          0)
+    (org-appear-trigger        'manual))
+    ; }}}
+; }}}

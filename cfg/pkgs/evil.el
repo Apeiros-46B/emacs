@@ -21,7 +21,7 @@
       evil-normal-state-cursor   `( box       ,(getcol 'fg1   ))
       evil-insert-state-cursor   `((bar . 2)  ,(getcol 'blue  ))
       evil-visual-state-cursor   `( box       ,(getcol 'purple))
-      evil-motion-state-cursor   `( box       ,(getcol 'aqua  ))
+      evil-motion-state-cursor   `( box       ,(getcol 'fg2   ))
       evil-replace-state-cursor  `((hbar . 2) ,(getcol 'red   ))
       evil-operator-state-cursor `((hbar . 2) ,(getcol 'green )))
     ; }}}
