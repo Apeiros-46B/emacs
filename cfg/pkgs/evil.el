@@ -10,6 +10,9 @@
     ; fix keybinds in agenda
     (evil-set-initial-state 'org-agenda-mode 'normal)
 
+    ; 2 spc indentation
+    (setq evil-shift-width 2)
+
     ; :set noshowmode
     (setq evil-insert-state-message nil
           evil-visual-state-message nil
