@@ -3,23 +3,30 @@
 
   :init
     ; {{{ custom keymaps
-    (ldr-defkm "oa" 'org-agenda)
-    (ldr-defkm "ol" 'org-latex-preview)
-    (ldr-defkm "op" 'org-priority)
-    (ldr-defkm "ot" 'org-time-stamp)
+    (ldr-defkm "oa" 'org-agenda) ; agenda should be always accessible
+    (ldr-defkm 'org-mode-map "ol" 'org-latex-preview)
+    (ldr-defkm 'org-mode-map "op" 'org-priority)
+    (ldr-defkm 'org-mode-map "ot" 'org-time-stamp)
 
-    (defkm '(normal visual) "C-SPC" 'org-toggle-checkbox)
-    (defkm '(normal visual) "gt" 'org-todo)
-    (defkm 'normal "RET" 'org-open-at-point)
+    (defkm '(normal visual) 'org-mode-map "C-SPC" 'org-toggle-checkbox)
+    (defkm '(normal visual) 'org-mode-map "gt" 'org-todo)
+    (defkm 'normal 'org-mode-map "RET" 'org-open-at-point)
+
+    ; folding/cycling
+    (defkm 'normal 'org-mode-map "za" 'org-cycle)
+    (defkm 'normal 'org-mode-map "zA" 'org-global-cycle)
+    (defkm 'normal 'org-mode-map "zR" 'org-show-all)
+    (defkm 'normal 'org-mode-map "zx" 'org-set-startup-visibility)
     ; }}}
 
   :custom
     ; {{{ custom options
     (org-dir (file-truename "~/org/"))
 
-    (org-adapt-indentation 'headline-data)
+    (org-log-into-drawer t)
+    (org-adapt-indentation t)
     (org-return-follows-link t)
-    (org-cycle-separator-lines -1)
+    (org-cycle-separator-lines 2)
 
     (org-todo-keywords '((sequence "NOW(n!)" "TODO(t!)" "MAYBE(m!)" "WAIT(w!)" "|" "DONE(d!)" "CANCEL(c!)" "DELEGATE(o!)")))
 
@@ -59,7 +66,7 @@
           nil)))
 
     (setq org-agenda-custom-commands
-      '(("c" "Simple agenda view"
+      '(("c" "Combined agenda view"
        ((tags "PRIORITY=\"1\""
          ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
           (org-agenda-overriding-header "High-priority unfinished tasks:")))
@@ -120,7 +127,7 @@
 
     ; {{{ custom options
     (org-modern-star '("◉" " ◈" "  ◉" "   ◈" "    ◉"))
-    (org-modern-timestamp '(" %Y.%m.%d " . " %H:%M "))
+    (org-modern-timestamp '(" %Y.%m.%d:%u " . " %H:%M "))
     (org-modern-table-vertical 1)
 
     (org-modern-list
