@@ -141,6 +141,9 @@
     (add-hook 'org-mode-hook #'org-modern-mode)
     (add-hook 'org-agenda-finalize-hook #'org-modern-agenda)
 
+    ; custom keymaps
+    (ldr-defkm 'org-mode-map "oc" 'org-modern-mode) ; c for concealer, force of habit from nvim
+
   :custom
     ; {{{ custom options
     (org-modern-star '("◉" " ◈" "  ◉" "   ◈" "    ◉"))
