@@ -7,6 +7,9 @@
     (ldr-defkm "a" 'org-agenda)
     (ldr-defkm "c" 'org-capture)
 
+    ; magic
+    (ldr-defkm 'org-mode-map "SPC" 'org-ctrl-c-ctrl-c)
+
     (ldr-defkm 'org-mode-map "op" 'org-priority)
     (ldr-defkm 'org-mode-map "ot" 'org-time-stamp)
 

@@ -16,7 +16,7 @@
     (load-file user-init-file)))
 
 ; cache folder
-(make-directory (concat (file-truename user-emacs-directory) "cache/") :parents)
+(mkdir (concat (file-truename user-emacs-directory) "cache/") :parents)
 
 ; {{{ straight.el
 (defvar bootstrap-version)

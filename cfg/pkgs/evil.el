@@ -30,7 +30,11 @@
 
     ; activate
     (require 'evil)
-    (evil-mode 1))
+    (evil-mode 1)
+
+    ; {{{ custom bindings
+    (defkm 'insert "C-S-v" "C-r \""))
+    ; }}}
 
 ; {{{ vim's C-a and C-x
 (use-package evil-numbers
