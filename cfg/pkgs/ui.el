@@ -1,4 +1,4 @@
-; THEME
+;; {{{ THEME
 (use-package nano-theme
   :commands nano-dark nano-light
   :straight (nano-theme :type git :host github :repo "rougier/nano-theme"))
@@ -101,9 +101,9 @@
 (set-face-attribute 'bold    nil :foreground (getcol 'fg1) :weight 'bold)
 (set-face-attribute 'italic  nil :foreground (getcol 'fg1) :weight 'regular :slant 'italic)
 ; }}}
-; END THEME
+;; }}}
 
-; MODELINE
+;; {{{ MODELINE
 (use-package nano-modeline
   :custom
     ; {{{ custom options
@@ -192,4 +192,10 @@
 
     ; activate
     (nano-modeline-mode))
-; END MODELINE
+;; }}}
+
+;; {{{ UI TWEAKS
+; make echo area faded
+(with-current-buffer " *Echo Area 0*" (face-remap-add-relative 'default '(:inherit nano-faded)))
+(with-current-buffer " *Echo Area 1*" (face-remap-add-relative 'default '(:inherit nano-faded)))
+;; }}}
