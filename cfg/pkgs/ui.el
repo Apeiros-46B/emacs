@@ -193,9 +193,3 @@
     ; activate
     (nano-modeline-mode))
 ;; }}}
-
-;; {{{ UI TWEAKS
-; make echo area faded
-(with-current-buffer " *Echo Area 0*" (face-remap-add-relative 'default '(:inherit nano-faded)))
-(with-current-buffer " *Echo Area 1*" (face-remap-add-relative 'default '(:inherit nano-faded)))
-;; }}}
