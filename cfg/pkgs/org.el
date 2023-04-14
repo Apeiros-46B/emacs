@@ -4,6 +4,7 @@
 
   :init
     ; {{{ custom keymaps
+    ; should always be available
     (ldr-defkm "a" 'org-agenda)
     (ldr-defkm "c" 'org-capture)
 
@@ -27,6 +28,17 @@
     (defkm 'normal 'org-mode-map "zM" 'org-global-cycle)
     (defkm 'normal 'org-mode-map "zR" 'org-show-all)
     (defkm 'normal 'org-mode-map "zx" 'org-set-startup-visibility)
+
+    ; promotion, demotion, and swapping
+    (defkm 'insert 'org-mode-map "C-t" 'org-demote-subtree)
+    (defkm 'insert 'org-mode-map "C-d" 'org-promote-subtree)
+
+    (defkm 'insert 'org-mode-map "C-j" 'org-move-subtree-down)
+    (defkm 'insert 'org-mode-map "C-k" 'org-move-subtree-up)
+
+    ; misc
+    (defkm 'insert 'org-mode-map "C-*" 'org-toggle-heading)
+    (ldr-defkm 'normal 'org-mode-map "*" 'org-toggle-heading)
     ; }}}
 
   :custom
@@ -45,7 +57,7 @@
     (org-return-follows-link t)
     (org-cycle-separator-lines 2)
 
-    (org-todo-keywords '((sequence "NOW(n!)" "TODO(t!)" "MAYBE(m!)" "WAIT(w!)" "|" "DONE(d!)" "CANCEL(c!)" "DELEGATE(o!)")))
+    (org-todo-keywords '((sequence "TODO(t!)" "NOW(n!)" "WAIT(w!)" "MAYBE(m!)" "EASY(e!)" "|" "DONE(d!)" "CANCELLED(c!)" "DELEGATED(D!)")))
 
     (org-priority-highest 1)
     (org-priority-lowest  8)
@@ -167,13 +179,14 @@
             (?\s . "[ ]")))
 
     (org-modern-todo-faces
-          `(("NOW"      :foreground ,(getcol 'bg1) :background ,(getcol 'red))
-            ("TODO"     :foreground ,(getcol 'bg1) :background ,(getcol 'fg2))
-            ("MAYBE"    :foreground ,(getcol 'bg1) :background ,(getcol 'purple))
-            ("WAIT"     :foreground ,(getcol 'bg1) :background ,(getcol 'orange))
-            ("DONE"     :foreground ,(getcol 'fg2) :background ,(getcol 'bg3))
-            ("CANCEL"   :foreground ,(getcol 'fg2) :background ,(getcol 'bg3))
-            ("DELEGATE" :foreground ,(getcol 'fg2) :background ,(getcol 'bg3))))
+          `(("NOW"       :foreground ,(getcol 'bg1) :background ,(getcol 'red))
+            ("WAIT"      :foreground ,(getcol 'bg1) :background ,(getcol 'orange))
+            ("MAYBE"     :foreground ,(getcol 'bg1) :background ,(getcol 'purple))
+            ("TODO"      :foreground ,(getcol 'bg1) :background ,(getcol 'fg2))
+            ("EASY"      :foreground ,(getcol 'bg1) :background ,(getcol 'green))
+            ("DONE"      :foreground ,(getcol 'fg2) :background ,(getcol 'bg3))
+            ("CANCELLED" :foreground ,(getcol 'fg2) :background ,(getcol 'bg3))
+            ("DELEGATED" :foreground ,(getcol 'fg2) :background ,(getcol 'bg3))))
 
     (org-modern-block-name '("$" . "$"))
     (org-modern-block-fringe 16)

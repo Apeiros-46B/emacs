@@ -51,7 +51,12 @@
 ; evil bindings for org-mode
 (use-package evil-org
   :after org
-  :hook (org-mode . (lambda () evil-org-mode))
+  :commands evil-org-mode
+
+  :init
+    ; :hook STILL doesn't work aaaa
+    (add-hook 'org-mode-hook #'evil-org-mode)
+
   :config
     (require 'evil-org-agenda)
     (evil-org-agenda-set-keys))
