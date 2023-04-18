@@ -5,6 +5,10 @@
 (defkm 'normal "C-S-j" 'eval-print-last-sexp)
 
 ; buffers
+(ldr-defkm "bd" 'kill-current-buffer)
+(ldr-defkm "bh" 'previous-buffer)
+(ldr-defkm "bl" 'next-buffer)
+
 (defkm 'normal "X" 'kill-current-buffer)
 (defkm 'normal "J" 'previous-buffer)
 (defkm 'normal "K" 'next-buffer)
