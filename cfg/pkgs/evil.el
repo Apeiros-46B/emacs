@@ -56,6 +56,7 @@
   :init
     ; :hook STILL doesn't work aaaa
     (add-hook 'org-mode-hook #'evil-org-mode)
+    (add-hook 'org-agenda-mode-hook #'evil-org-mode)
 
   :config
     (require 'evil-org-agenda)
