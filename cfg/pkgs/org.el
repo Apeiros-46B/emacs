@@ -200,7 +200,7 @@
   :config
     ; {{{ custom faces
     (set-face-attribute 'org-modern-symbol nil :foreground (getcol 'fg2))
-    (set-face-attribute 'org-modern-label nil :foreground (getcol 'fg2))
+    (set-face-attribute 'org-modern-label nil :foreground (getcol 'fg2) :height 0.9)
 
     (set-face-attribute 'org-modern-tag nil :foreground (getcol 'fg2))
 
