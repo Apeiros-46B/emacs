@@ -13,6 +13,7 @@
 
     (ldr-defkm 'org-mode-map "op" 'org-priority)
     (ldr-defkm 'org-mode-map "ot" 'org-time-stamp)
+    (ldr-defkm 'org-mode-map "ol" 'org-latex-preview)
 
     ; link creation
     (ldr-defkm "l" 'org-store-link)

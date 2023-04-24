@@ -26,3 +26,8 @@
 
 ; scroll one line at a time
 (setq scroll-conservatively most-positive-fixnum)
+
+; no startup messages
+(setq inhibit-startup-message t)
+(setq inhibit-startup-echo-area-message t)
+(setq server-client-instructions nil)
