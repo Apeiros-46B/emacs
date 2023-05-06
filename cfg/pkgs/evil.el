@@ -3,6 +3,10 @@
 
 ; main package
 (use-package evil
+  :init
+    (setq evil-want-integration t)
+    (setq evil-want-keybinding nil)
+
   :config
     ; undo system
     (evil-set-undo-system 'undo-redo)
@@ -29,7 +33,6 @@
     ; }}}
 
     ; activate
-    (require 'evil)
     (evil-mode 1)
 
     ; {{{ custom bindings
@@ -44,11 +47,11 @@
     (defkm '(normal visual) "C-S-a" 'evil-numbers/dec-at-pt))
 ; }}}
 
-; surround
-(use-package evil-surround
-  :config (global-evil-surround-mode 1))
+; bindings for misc things
+(use-package evil-collection
+  :config (evil-collection-init))
 
-; evil bindings for org-mode
+; bindings for org-mode
 (use-package evil-org
   :after org
   :commands evil-org-mode
@@ -61,3 +64,7 @@
   :config
     (require 'evil-org-agenda)
     (evil-org-agenda-set-keys))
+
+; surround
+(use-package evil-surround
+  :config (global-evil-surround-mode 1))

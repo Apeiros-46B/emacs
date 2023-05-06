@@ -55,7 +55,7 @@
     (org-log-done 'time)
 
     (org-adapt-indentation t)
-    (org-return-follows-link t)
+    (org-return-follows-link nil)
     (org-cycle-separator-lines 2)
 
     (org-todo-keywords '((sequence "TODO(t!)" "NOW(n!)" "WAIT(w!)" "MAYBE(m!)" "EASY(e!)" "|" "DONE(d!)" "CANCELLED(c!)" "DELEGATED(D!)")))
