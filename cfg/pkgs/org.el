@@ -69,6 +69,8 @@
     (org-catch-invisible-edits 'show-and-error)
     (org-special-ctrl-a/e t)
     (org-insert-heading-respect-content t)
+
+    (org-image-actual-width nil)
     ; }}}
 
     ; {{{ visuals
@@ -175,7 +177,7 @@
             (?* . "•")))
 
     (org-modern-checkbox
-          '((?X  . "[]")
+          '((?X  . "[󰄬]")
             (?-  . "[-]")
             (?\s . "[ ]")))
 
@@ -192,8 +194,8 @@
     (org-modern-block-name '("$" . "$"))
     (org-modern-block-fringe 16)
 
-    (org-modern-internal-target '("  " t " "))
-    (org-modern-radio           '("  " t " "))
+    (org-modern-internal-target '(" 󰌹 " t " "))
+    (org-modern-radio           '(" 󰌹 " t " "))
 
     (org-modern-progress nil)
     ; }}}
