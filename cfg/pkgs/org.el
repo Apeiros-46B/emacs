@@ -58,7 +58,7 @@
     (org-return-follows-link nil)
     (org-cycle-separator-lines 2)
 
-    (org-todo-keywords '((sequence "TODO(t!)" "NOW(n!)" "WAIT(w!)" "MAYBE(m!)" "EASY(e!)" "|" "DONE(d!)" "CANCELLED(c!)" "DELEGATED(D!)")))
+    (org-todo-keywords '((sequence "TODO(t!)" "NOW(n!)" "WAIT(w!)" "MAYBE(m!)" "PASSIVE(p!)" "|" "DONE(d!)" "CANCELLED(c!)" "DELEGATED(D!)")))
 
     (org-priority-highest 1)
     (org-priority-lowest  8)
@@ -186,7 +186,7 @@
             ("WAIT"      :foreground ,(getcol 'bg1) :background ,(getcol 'orange))
             ("MAYBE"     :foreground ,(getcol 'bg1) :background ,(getcol 'purple))
             ("TODO"      :foreground ,(getcol 'bg1) :background ,(getcol 'fg2))
-            ("EASY"      :foreground ,(getcol 'bg1) :background ,(getcol 'green))
+            ("PASSIVE"   :foreground ,(getcol 'bg1) :background ,(getcol 'green))
             ("DONE"      :foreground ,(getcol 'fg2) :background ,(getcol 'bg3))
             ("CANCELLED" :foreground ,(getcol 'fg2) :background ,(getcol 'bg3))
             ("DELEGATED" :foreground ,(getcol 'fg2) :background ,(getcol 'bg3))))
