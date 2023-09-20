@@ -5,8 +5,14 @@
   :init
     ; {{{ custom keymaps
     ; should always be available
-    (ldr-defkm "a" 'org-agenda)
-    (ldr-defkm "c" 'org-capture)
+    (ldr-defkm "a"  'org-agenda)
+    (ldr-defkm "c"  'org-roam-capture)
+    (ldr-defkm "rl" 'org-roam-buffer-toggle)
+    (ldr-defkm "rf" 'org-roam-node-find)
+    (ldr-defkm "ri" 'org-roam-node-insert)
+    (ldr-defkm "rg" 'org-roam-graph)
+    (ldr-defkm "rd" 'org-roam-dailies-capture-today)
+    (ldr-defkm "rD" 'org-roam-dailies-goto-today)
 
     ; magic
     (ldr-defkm 'org-mode-map "SPC" 'org-ctrl-c-ctrl-c)
@@ -17,7 +23,7 @@
 
     ; link creation
     (ldr-defkm "l" 'org-store-link)
-    (ldr-defkm 'org-mode-map "L" 'org-insert-link)
+    (ldr-defkm 'org-mode-map "i" 'org-insert-link)
 
     (defkm '(normal visual) 'org-mode-map "C-SPC" 'org-toggle-checkbox)
     (defkm '(normal visual) 'org-mode-map "gt" 'org-todo)
@@ -135,19 +141,9 @@
 
   :custom
     (org-roam-directory (file-truename "~/org/zk"))
-
-  :init
-    ; {{{ custom keymaps
-    (ldr-defkm "rl" 'org-roam-buffer-toggle)
-    (ldr-defkm "rf" 'org-roam-node-find)
-    (ldr-defkm "ri" 'org-roam-node-insert)
-    (ldr-defkm "rg" 'org-roam-graph)
-    (ldr-defkm "rc" 'org-roam-capture)
-    (ldr-defkm "rj" 'org-roam-dailies-capture-today)
-    ; }}}
+    (org-roam-node-display-template (concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
 
   :config
-    (setq org-roam-node-display-template (concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
     (org-roam-db-autosync-mode)
     (require 'org-roam-protocol))
 
