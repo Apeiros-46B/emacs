@@ -4,6 +4,7 @@
 /org-persist/
 /straight/
 
+/.org-id-locations
 /org-roam.db
 /smex-items
 /recentf
