@@ -134,14 +134,14 @@
   :after org
 
   :custom
-    (org-roam-directory (file-truename "~/org/"))
+    (org-roam-directory (file-truename "~/org/zk"))
 
   :init
     ; {{{ custom keymaps
     (ldr-defkm "rl" 'org-roam-buffer-toggle)
     (ldr-defkm "rf" 'org-roam-node-find)
-    (ldr-defkm "rg" 'org-roam-graph)
     (ldr-defkm "ri" 'org-roam-node-insert)
+    (ldr-defkm "rg" 'org-roam-graph)
     (ldr-defkm "rc" 'org-roam-capture)
     (ldr-defkm "rj" 'org-roam-dailies-capture-today)
     ; }}}
@@ -150,6 +150,34 @@
     (setq org-roam-node-display-template (concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
     (org-roam-db-autosync-mode)
     (require 'org-roam-protocol))
+
+; (use-package org-roam-ui
+;   :after org-roam
+
+;   :straight
+;     (:host github :repo "org-roam/org-roam-ui" :branch "main" :files ("*.el" "out"))
+
+;   :init
+;     (add-hook 'org-mode-hook #'org-roam-ui-mode)
+
+;   :custom
+;     (org-roam-ui-sync-theme nil)
+;     (org-roam-ui-follow t)
+;     (org-roam-ui-update-on-save t)
+;     (org-roam-ui-open-on-start nil)
+;     (org-roam-ui-custom-theme
+;     `((bg      . ,(getcol 'bg1))
+;       (bg-alt  . ,(getcol 'bg2))
+;       (fg      . ,(getcol 'fg1))
+;       (fg-alt  . ,(getcol 'fg2))
+;       (red     . ,(getcol 'red))
+;       (orange  . ,(getcol 'orange))
+;       (yellow  . ,(getcol 'yellow))
+;       (green   . ,(getcol 'green))
+;       (cyan    . ,(getcol 'aqua))
+;       (blue    . ,(getcol 'blue))
+;       (violet  . ,(getcol 'purple))
+;       (magenta . ,(getcol 'purple)))))
 ; }}}
 
 ; {{{ org-modern
