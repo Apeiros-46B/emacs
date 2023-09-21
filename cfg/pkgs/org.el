@@ -5,14 +5,9 @@
   :init
     ; {{{ custom keymaps
     ; should always be available
-    (ldr-defkm "a"  'org-agenda)
-    (ldr-defkm "c"  'org-roam-capture)
-    (ldr-defkm "rl" 'org-roam-buffer-toggle)
-    (ldr-defkm "rf" 'org-roam-node-find)
-    (ldr-defkm "ri" 'org-roam-node-insert)
-    (ldr-defkm "rg" 'org-roam-graph)
-    (ldr-defkm "rd" 'org-roam-dailies-capture-today)
-    (ldr-defkm "rD" 'org-roam-dailies-goto-today)
+    (ldr-defkm "a" 'org-agenda)
+    (ldr-defkm "c" 'my-org-capture-slipbox)
+    (ldr-defkm "C" 'my-org-goto-capture-file)
 
     ; magic
     (ldr-defkm 'org-mode-map "SPC" 'org-ctrl-c-ctrl-c)
@@ -51,8 +46,8 @@
   :custom
     ; {{{ custom options
     ; {{{ functionality
-    (org-dir (file-truename "~/org/"))
-    (org-agenda-files `(,(file-truename "~/org/agenda")))
+    (org-directory (directory-file-name (file-truename "~/org/")))
+    (org-agenda-files `(,(concat org-directory "/agenda")))
 
     ; don't clutter my fs with latex image cache
     (org-preview-latex-image-directory (concat (file-truename user-emacs-directory) "cache/ltximg/" (buffer-file-name)))
@@ -64,7 +59,16 @@
     (org-return-follows-link nil)
     (org-cycle-separator-lines 2)
 
-    (org-todo-keywords '((sequence "TODO(t!)" "NOW(n!)" "WAIT(w!)" "MAYBE(m!)" "ONGOING(o!)" "|" "DONE(d!)" "CANCELLED(c!)" "DELEGATED(D!)")))
+    (org-todo-keywords
+      '((sequence "TODO(t!)"
+                  "NOW(n!)"
+                  "WAIT(w!)"
+                  "MAYBE(m!)"
+                  "ONGOING(o!)"
+                  "|"
+                  "DONE(d!)"
+                  "CANCELLED(c!)"
+                  "DELEGATED(D!)")))
 
     (org-priority-highest 1)
     (org-priority-lowest  8)
@@ -131,7 +135,23 @@
         (alltodo ""
          ((org-agenda-skip-function
          '(or (apeiros/org-skip-subtree-if-priority 1)
-            (org-agenda-skip-if nil '(scheduled deadline)))))))))))
+            (org-agenda-skip-if nil '(scheduled deadline))))))))))
+    ; }}}
+
+    ; {{{ quick capture and goto capture file
+    (setq my-org-capture-file (concat org-directory "/capture.org"))
+    (setq org-capture-templates
+      `(("s" "Slipbox" entry (file ,my-org-capture-file) "* [%<%Y-%m-%d %H:%M>] %?"
+        :empty-lines-before 2)))
+
+    (defun my-org-capture-slipbox ()
+      (interactive)
+      (org-capture nil "s")
+      (evil-insert-state))
+
+    (defun my-org-goto-capture-file ()
+      (interactive)
+      (find-file my-org-capture-file)))
     ; }}}
 ; }}}
 
@@ -139,13 +159,63 @@
 (use-package org-roam
   :after org
 
+  :init
+    ; {{{ custom keymaps
+    (ldr-defkm "rl" 'org-roam-buffer-toggle)
+    (ldr-defkm "rf" 'org-roam-node-find)
+    (ldr-defkm "ri" 'org-roam-node-insert)
+    (ldr-defkm "rg" 'org-roam-graph)
+    (ldr-defkm "rn" 'org-roam-capture)
+    (ldr-defkm "rd" 'org-roam-dailies-capture-today)
+    (ldr-defkm "rD" 'org-roam-dailies-goto-today)
+    ; }}}
+
   :custom
-    (org-roam-directory (file-truename "~/org/zk"))
-    (org-roam-node-display-template (concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
+    ; {{{ custom options
+    (org-roam-directory org-directory)
+
+    ; node display in capture/find selector
+    (org-roam-node-display-template
+      (concat
+        (propertize "${type:12}" 'face 'org-tag)
+        " → ${title:*} "
+        (propertize "${tags:30}" 'face 'org-tag)))
+    ; }}}
 
   :config
-    (org-roam-db-autosync-mode)
-    (require 'org-roam-protocol))
+    (org-roam-db-autosync-enable)
+    (require 'org-roam-protocol)
+
+    ; {{{ capture templates
+    (cl-flet ((capture-template (key path1 path2)
+      (let ((path (concat (symbol-name path1) "/" (symbol-name path2))))
+        `(,key ,path plain "%?"
+          :target
+            (file+head ,(concat path "/%<%Y.%m.%d>_${slug}.org")
+              ,(concat
+                "#+date: <%<%Y-%m-%d %a>>\n"
+                "#+title: ${title}\n"
+                "#+filetags: "))
+          :immediate-finish t
+          :unnarrowed t))))
+      (setq org-roam-capture-templates
+        `(,(capture-template "m" 'main  'school)
+          ,(capture-template "r" 'ref   'school)
+          ,(capture-template "f" 'final 'school)
+          ,(capture-template "M" 'main  'other)
+          ,(capture-template "R" 'ref   'other)
+          ,(capture-template "F" 'final 'other))))
+    ; }}}
+
+    ; {{{ node "types"
+    (cl-defmethod org-roam-node-type ((node org-roam-node))
+      "Return the TYPE of NODE."
+      (condition-case nil
+        (directory-file-name
+          (file-name-directory
+            (file-relative-name (org-roam-node-file node) org-roam-directory)))
+        (error ""))))
+    ; }}}
 
 ; (use-package org-roam-ui
 ;   :after org-roam
