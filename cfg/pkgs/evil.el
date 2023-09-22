@@ -42,6 +42,7 @@
 ; {{{ vim's C-a and C-x
 (use-package evil-numbers
   :commands evil-numbers/inc-at-pt evil-numbers/dec-at-pt
+
   :init
     (defkm '(normal visual) "C-a"   'evil-numbers/inc-at-pt)
     (defkm '(normal visual) "C-S-a" 'evil-numbers/dec-at-pt))
@@ -56,10 +57,9 @@
   :after org
   :commands evil-org-mode
 
-  :init
-    ; :hook STILL doesn't work aaaa
-    (add-hook 'org-mode-hook #'evil-org-mode)
-    (add-hook 'org-agenda-mode-hook #'evil-org-mode)
+  :hook
+    (org-mode-hook evil-org-mode)
+    (org-agenda-mode-hook evil-org-mode)
 
   :config
     (require 'evil-org-agenda)

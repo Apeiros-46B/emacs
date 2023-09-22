@@ -7,7 +7,12 @@
 ; hop
 (use-package hop
   :straight (hop :host github :repo "Animeshz/hop.el")
-  :commands hop-word hop-char hop-line hop-line-skip-whitespace
+
+  :commands
+    hop-word
+    hop-char
+    hop-line
+    hop-line-skip-whitespace
 
   :init
     ; {{{ keymaps

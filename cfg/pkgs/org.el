@@ -2,6 +2,10 @@
 (use-package org
   :mode ("\\.org\\'" . org-mode)
 
+  :commands
+    my-org-capture-slipbox
+    my-org-goto-capture-file
+
   :init
     ; {{{ custom keymaps
     ; should always be available
@@ -223,8 +227,7 @@
 ;   :straight
 ;     (:host github :repo "org-roam/org-roam-ui" :branch "main" :files ("*.el" "out"))
 
-;   :init
-;     (add-hook 'org-mode-hook #'org-roam-ui-mode)
+;   :hook (org-mode . org-roam-ui-mode)
 
 ;   :custom
 ;     (org-roam-ui-sync-theme nil)
@@ -249,15 +252,15 @@
 ; {{{ org-modern
 (use-package org-modern
   :after org
-  :commands org-modern-mode org-modern-agenda global-org-modern-mode
 
-  :init
-    ; activation hooks (use-package :hook refuses to work)
-    (add-hook 'org-mode-hook #'org-modern-mode)
-    (add-hook 'org-agenda-finalize-hook #'org-modern-agenda)
+  :commands
+    org-modern-mode
+    org-modern-agenda
+    global-org-modern-mode
 
-    ; custom keymaps
-    (ldr-defkm 'org-mode-map "oc" 'org-modern-mode) ; c for concealer, force of habit from nvim
+  :hook
+    (org-mode            . org-modern-mode)
+    (org-agenda-finalize . org-modern-agenda)
 
   :custom
     ; {{{ custom options
@@ -321,17 +324,13 @@
 ;}}}
 
 ; {{{ org-fragtog + org-appear
-; :hook STILL refuses to work >:(
 (use-package org-fragtog
   :commands org-fragtog-mode
-  :init (add-hook 'org-mode-hook #'org-fragtog-mode))
+  :hook (org-mode . org-fragtog-mode))
 
 (use-package org-appear
   :commands org-appear-mode
-
-  :init
-    ; load hook
-    (add-hook 'org-mode-hook #'org-appear-mode)
+  :hook (org-mode . org-appear-mode)
 
   :custom
     ; {{{ custom options

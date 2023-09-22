@@ -1,7 +1,7 @@
 ;; {{{ THEME
 (use-package nano-theme
-  :commands nano-dark nano-light
-  :straight (nano-theme :type git :host github :repo "rougier/nano-theme"))
+  :straight (nano-theme :type git :host github :repo "rougier/nano-theme")
+  :commands nano-dark nano-light)
 
 ; {{{ define custom colors
 (setq frame-background-mode 'dark)
