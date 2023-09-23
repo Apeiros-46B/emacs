@@ -1,4 +1,6 @@
-; muscle memory
+; vim:et
+
+; convenience
 (defkm 'normal "WW"    'save-buffer)
 (defkm 'normal "C-q"   'evil-visual-block)
 (defkm 'normal "C-S-j" 'eval-print-last-sexp)

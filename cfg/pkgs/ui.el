@@ -1,3 +1,5 @@
+; vim:et
+
 ;; {{{ THEME
 (use-package nano-theme
   :straight (nano-theme :type git :host github :repo "rougier/nano-theme")

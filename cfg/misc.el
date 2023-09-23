@@ -1,3 +1,5 @@
+; vim:et
+
 ; {{{ wrapping
 (setq-default fill-column 88)
 (global-visual-line-mode t)

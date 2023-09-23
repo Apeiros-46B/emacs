@@ -1,3 +1,5 @@
+; vim:et
+
 ; pcre dependency
 (use-package pcre
   :straight (pcre :host github :repo "syohex/emacs-pcre"

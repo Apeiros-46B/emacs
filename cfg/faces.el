@@ -1,3 +1,5 @@
+; vim:et
+
 (custom-set-faces
   `(minibuffer-prompt ((t (:background ,(getcol 'bg1) :foreground ,(getcol 'green) :weight bold))))
 

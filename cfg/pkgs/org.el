@@ -1,3 +1,5 @@
+; vim:et
+
 ; {{{ org
 (use-package org
   :mode ("\\.org\\'" . org-mode)
@@ -22,7 +24,7 @@
 
     ; link creation
     (ldr-defkm "l" 'org-store-link)
-    (ldr-defkm 'org-mode-map "i" 'org-insert-link)
+    (ldr-defkm 'org-mode-map "L" 'org-insert-link)
 
     (defkm '(normal visual) 'org-mode-map "C-SPC" 'org-toggle-checkbox)
     (defkm '(normal visual) 'org-mode-map "gt" 'org-todo)

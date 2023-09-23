@@ -1,3 +1,5 @@
+; vim:et
+
 ; for g; and g, motions and the . register
 (use-package goto-chg)
 

@@ -1,3 +1,5 @@
+; vim:et
+
 (use-package counsel
   :init
     (ldr-defkm "bf" 'counsel-switch-buffer)

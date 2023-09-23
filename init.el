@@ -1,3 +1,5 @@
+; vim:et
+
 ; we need these options before any other elisp code
 (setq max-specpdl-size 3200)
 (setq max-lisp-eval-depth 3200)
@@ -84,7 +86,7 @@
   :non-normal-prefix "M-SPC")
 ; }}}
 
-; all ui packages (nano-theme, nano-modeline)
+; all ui packages (nano-theme, nano-modeline, etc.)
 (loadcfg "pkgs/ui")
 
 ; evil
@@ -93,7 +95,7 @@
 ; hop
 (loadcfg "pkgs/hop")
 
-; ivy & co.
+; ivy & related
 (loadcfg "pkgs/ivy")
 
 ; org
