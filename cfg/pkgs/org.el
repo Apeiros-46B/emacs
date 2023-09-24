@@ -117,7 +117,8 @@
     (set-face-attribute 'org-level-4 nil :foreground (getcol 'purple) :weight 'bold)
     (set-face-attribute 'org-level-5 nil :foreground (getcol 'red)    :weight 'bold)
 
-    (set-face-attribute 'org-link nil :foreground (getcol 'purple) :underline t)
+    (set-face-attribute 'org-link    nil :foreground (getcol 'purple) :underline t)
+    (set-face-attribute 'org-list-dt nil :foreground (getcol 'green))
     ; }}}
 
     ; {{{ org-agenda
