@@ -154,6 +154,7 @@
     (defun my-org-capture-slipbox ()
       (interactive)
       (org-capture nil "s")
+      ; TODO: I'm sure there is a hook upon entering capture mode but I don't know what it's called
       (evil-insert-state))
 
     (defun my-org-goto-capture-file ()
@@ -165,6 +166,9 @@
 ; {{{ org-roam
 (use-package org-roam
   :after org
+
+  :hook
+    (org-roam-capture-new-node . evil-insert-state)
 
   :init
     ; {{{ custom keymaps
@@ -196,13 +200,8 @@
     ; {{{ capture templates
     (cl-flet ((capture-template (key path1 path2)
       (let ((path (concat (symbol-name path1) "/" (symbol-name path2))))
-        `(,key ,path plain "%?"
-          :target
-            (file+head ,(concat path "/%<%Y.%m.%d>_${slug}.org")
-              ,(concat
-                "#+date: <%<%Y-%m-%d %a>>\n"
-                "#+title: ${title}\n"
-                "#+filetags: "))
+        `(,key ,path plain "#+date: <%<%Y-%m-%d %a>>\n#+title: ${title}\n#+filetags: %?"
+          :target (file ,(concat path "/%<%Y.%m.%d>_${slug}.org"))
           :immediate-finish t
           :unnarrowed t))))
       (setq org-roam-capture-templates
