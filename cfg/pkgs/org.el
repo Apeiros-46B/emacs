@@ -200,8 +200,10 @@
     ; {{{ capture templates
     (cl-flet ((capture-template (key path1 path2)
       (let ((path (concat (symbol-name path1) "/" (symbol-name path2))))
-        `(,key ,path plain "#+date: <%<%Y-%m-%d %a>>\n#+title: ${title}\n#+filetags: %?"
-          :target (file ,(concat path "/%<%Y.%m.%d>_${slug}.org"))
+        `(,key ,path plain "%?"
+          :target
+            (file+head ,(concat path "/%<%Y.%m.%d>_${slug}.org")
+              "#+date: <%<%Y-%m-%d %a>>\n#+title: ${title}\n#+filetags: ")
           :immediate-finish t
           :unnarrowed t))))
       (setq org-roam-capture-templates
