@@ -179,6 +179,7 @@
     (ldr-defkm "rn" 'org-roam-capture)
     (ldr-defkm "rd" 'org-roam-dailies-capture-today)
     (ldr-defkm "rD" 'org-roam-dailies-goto-today)
+    (ldr-defkm "rs" 'org-roam-db-sync)
     ; }}}
 
   :custom
@@ -233,7 +234,11 @@
     (org-mode . (lambda ()
       (unless (default-value 'org-roam-ui-mode) org-roam-ui-mode)))
 
+  :init
+    (ldr-defkm "ru" 'org-roam-ui-open)
+
   :custom
+    ; {{{ custom options
     (org-roam-ui-sync-theme nil)
     (org-roam-ui-follow t)
     (org-roam-ui-update-on-save t)
@@ -254,6 +259,7 @@
         (blue    . ,(getcol 'blue))
         (violet  . ,(getcol 'purple))
         (magenta . ,(getcol 'purple)))))
+    ; }}}
 ; }}}
 
 ; {{{ org-modern
