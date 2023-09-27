@@ -9,8 +9,7 @@
     my-org-goto-capture-file
 
   :init
-    ; {{{ custom keymaps
-    ; should always be available
+    ; {{{ custom keymaps (org)
     (ldr-defkm "a" 'org-agenda)
     (ldr-defkm "c" 'my-org-capture-slipbox)
     (ldr-defkm "C" 'my-org-goto-capture-file)
@@ -26,9 +25,9 @@
     (ldr-defkm "l" 'org-store-link)
     (ldr-defkm 'org-mode-map "L" 'org-insert-link)
 
+    (defkm 'normal 'org-mode-map "RET" 'org-open-at-point)
     (defkm '(normal visual) 'org-mode-map "C-SPC" 'org-toggle-checkbox)
     (defkm '(normal visual) 'org-mode-map "gt" 'org-todo)
-    (defkm 'normal 'org-mode-map "RET" 'org-open-at-point)
 
     ; folding/cycling
     (defkm 'normal 'org-mode-map "za" 'org-cycle)
@@ -40,13 +39,26 @@
     ; promotion, demotion, and swapping
     (defkm 'insert 'org-mode-map "C-t" 'org-demote-subtree)
     (defkm 'insert 'org-mode-map "C-d" 'org-promote-subtree)
-
     (defkm 'insert 'org-mode-map "C-j" 'org-move-subtree-down)
     (defkm 'insert 'org-mode-map "C-k" 'org-move-subtree-up)
 
     ; misc
-    (defkm 'insert 'org-mode-map "C-*" 'org-toggle-heading)
     (ldr-defkm 'normal 'org-mode-map "*" 'org-toggle-heading)
+    ; }}}
+
+    ; {{{ custom keymaps (org-roam)
+    (ldr-defkm "rl" 'org-roam-buffer-toggle)
+    (ldr-defkm "rf" 'org-roam-node-find)
+    (ldr-defkm "ri" 'org-roam-node-insert)
+    (ldr-defkm "rg" 'org-roam-graph)
+    (ldr-defkm "rn" 'org-roam-capture)
+    (ldr-defkm "rd" 'org-roam-dailies-capture-today)
+    (ldr-defkm "rD" 'org-roam-dailies-goto-today)
+    (ldr-defkm "rs" 'org-roam-db-sync)
+    ; }}}
+
+    ; {{{ custom keymaps (org-roam-ui)
+    (ldr-defkm "ru" 'org-roam-ui-open)
     ; }}}
 
   :custom
@@ -170,18 +182,6 @@
   :hook
     (org-roam-capture-new-node . evil-insert-state)
 
-  :init
-    ; {{{ custom keymaps
-    (ldr-defkm "rl" 'org-roam-buffer-toggle)
-    (ldr-defkm "rf" 'org-roam-node-find)
-    (ldr-defkm "ri" 'org-roam-node-insert)
-    (ldr-defkm "rg" 'org-roam-graph)
-    (ldr-defkm "rn" 'org-roam-capture)
-    (ldr-defkm "rd" 'org-roam-dailies-capture-today)
-    (ldr-defkm "rD" 'org-roam-dailies-goto-today)
-    (ldr-defkm "rs" 'org-roam-db-sync)
-    ; }}}
-
   :custom
     ; {{{ custom options
     (org-roam-directory org-directory)
@@ -225,7 +225,9 @@
             (file-relative-name (org-roam-node-file node) org-roam-directory)))
         (error ""))))
     ; }}}
+; }}}
 
+; {{{ org-roam-ui
 (use-package org-roam-ui
   :after org-roam
 
@@ -235,9 +237,6 @@
   :hook
     (org-mode . (lambda ()
       (unless (default-value 'org-roam-ui-mode) org-roam-ui-mode)))
-
-  :init
-    (ldr-defkm "ru" 'org-roam-ui-open)
 
   :custom
     ; {{{ custom options
