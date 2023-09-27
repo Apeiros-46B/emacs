@@ -244,7 +244,6 @@
     (org-roam-ui-follow t)
     (org-roam-ui-update-on-save t)
     (org-roam-ui-open-on-start nil)
-    ; TODO: text in the options panel is dark for some reason
     (org-roam-ui-custom-theme
       `((bg      . ,(getcol 'bg1))
         (bg-alt  . ,(getcol 'bg2))

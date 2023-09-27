@@ -33,3 +33,6 @@
 (setq inhibit-startup-message t)
 (setq inhibit-startup-echo-area-message t)
 (setq server-client-instructions nil)
+
+; don't add a newline on save
+(setq require-final-newline nil)
