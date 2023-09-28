@@ -192,6 +192,9 @@
         (propertize "${type:12}" 'face 'org-tag)
         " → ${title:*} "
         (propertize "${tags:30}" 'face 'org-tag)))
+
+    ; fix org-roam-ui only showing one tag
+    (org-roam-database-connector 'sqlite)
     ; }}}
 
   :config
