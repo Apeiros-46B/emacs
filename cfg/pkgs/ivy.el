@@ -2,9 +2,12 @@
 
 (use-package counsel
   :init
+    ; {{{ custom keybindings
     (ldr-defkm "bf" 'counsel-switch-buffer)
     (ldr-defkm "fb" 'counsel-bookmark)
-    (ldr-defkm "fr" 'counsel-recentf))
+    (ldr-defkm "fr" 'counsel-recentf)
+    (ldr-defkm "fw" 'counsel-rg))
+    ; }}}
 
 (use-package smex)
 
