@@ -18,10 +18,10 @@
 
   :init
     ; {{{ keymaps
-    (ldr-defkm "Hh" 'hop-word)
-    (ldr-defkm "Hc" 'hop-char)
-    (ldr-defkm "Hn" 'hop-line)
-    (ldr-defkm "HN" 'hop-line-skip-whitespace)
+    (ldr-defkm "hh" 'hop-word)
+    (ldr-defkm "hc" 'hop-char)
+    (ldr-defkm "hn" 'hop-line)
+    (ldr-defkm "hN" 'hop-line-skip-whitespace)
     ; }}}
 
   :config
