@@ -60,8 +60,8 @@
   :commands evil-org-mode
 
   :hook
-    (org-mode-hook evil-org-mode)
-    (org-agenda-mode-hook evil-org-mode)
+    (org-mode . evil-org-mode)
+    (org-agenda-mode . evil-org-mode)
 
   :config
     (require 'evil-org-agenda)

@@ -4,13 +4,25 @@
 (use-package org
   :mode ("\\.org\\'" . org-mode)
 
+  ; skip subtree when folding/cycling
+  :hook
+    (org-cycle . (lambda (state)
+      (when (eq state 'children)
+        (setq org-cycle-subtree-status 'subtree))))
+    (evil-org-mode . (lambda ()
+      ; override the evil-org-mode keymaps
+      (defkm 'normal 'org-agenda-mode-map "C-]" 'org-agenda-goto)
+      (defkm 'normal 'org-agenda-mode-map "RET" 'org-agenda-goto)))
+
   :commands
     my-org-capture-slipbox
     my-org-goto-capture-file
+    my-org-goto-agenda-dir
 
   :init
     ; {{{ custom keymaps (org)
     (ldr-defkm "a" 'org-agenda)
+    (ldr-defkm "A" 'my-org-goto-agenda-dir)
     (ldr-defkm "c" 'my-org-capture-slipbox)
     (ldr-defkm "C" 'my-org-goto-capture-file)
 
@@ -22,19 +34,24 @@
     (ldr-defkm 'org-mode-map "ol" 'org-latex-preview)
 
     ; link creation
-    (ldr-defkm "l" 'org-store-link)
-    (ldr-defkm 'org-mode-map "L" 'org-insert-link)
+    (ldr-defkm "ol" 'org-store-link)
+    (ldr-defkm 'org-mode-map "oi" 'org-insert-link)
 
+    (defkm 'normal 'org-mode-map "C-]" 'org-open-at-point)
     (defkm 'normal 'org-mode-map "RET" 'org-open-at-point)
+    (defkm 'normal 'org-agenda-mode-map "C-]" 'org-agenda-goto)
+    (defkm 'normal 'org-agenda-mode-map "RET" 'org-agenda-goto)
     (defkm '(normal visual) 'org-mode-map "C-SPC" 'org-toggle-checkbox)
     (defkm '(normal visual) 'org-mode-map "gt" 'org-todo)
 
     ; folding/cycling
+    ; I don't use the evil-*-fold commands because they
+    ; don't leave empty lines between folded headers
     (defkm 'normal 'org-mode-map "za" 'org-cycle)
     (defkm 'normal 'org-mode-map "zA" 'org-global-cycle)
     (defkm 'normal 'org-mode-map "zM" 'org-global-cycle)
-    (defkm 'normal 'org-mode-map "zR" 'org-show-all)
-    (defkm 'normal 'org-mode-map "zx" 'org-set-startup-visibility)
+    (defkm 'normal 'org-mode-map "zR" 'org-fold-show-all)
+    (defkm 'normal 'org-mode-map "zx" 'org-cycle-set-startup-visibility)
 
     ; promotion, demotion, and swapping
     (defkm 'insert 'org-mode-map "C-t" 'org-demote-subtree)
@@ -135,7 +152,7 @@
 
     ; {{{ org-agenda
     ; helper function
-    (defun apeiros/org-skip-subtree-if-priority (priority)
+    (defun my-org-skip-subtree-if-priority (priority)
       "Skip an agenda subtree if it has a priority of PRIORITY.
       PRIORITY may be a number from 1-8."
       (let ((subtree-end (save-excursion (org-end-of-subtree t)))
@@ -153,8 +170,12 @@
         (agenda "")
         (alltodo ""
          ((org-agenda-skip-function
-         '(or (apeiros/org-skip-subtree-if-priority 1)
+         '(or (my-org-skip-subtree-if-priority 1)
             (org-agenda-skip-if nil '(scheduled deadline))))))))))
+
+    (defun my-org-goto-agenda-dir ()
+      (interactive)
+      (dired org-agenda-files))
     ; }}}
 
     ; {{{ quick capture and goto capture file
@@ -166,7 +187,6 @@
     (defun my-org-capture-slipbox ()
       (interactive)
       (org-capture nil "s")
-      ; TODO: I'm sure there is a hook upon entering capture mode but I don't know what it's called
       (evil-insert-state))
 
     (defun my-org-goto-capture-file ()
