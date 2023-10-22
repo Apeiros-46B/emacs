@@ -12,7 +12,8 @@
 (use-package smex)
 
 (use-package ivy
-  :init (setq enable-recursive-minibuffers t)
+  :init
+    (setq enable-recursive-minibuffers t)
 
   :custom
     ; {{{ custom options
@@ -27,7 +28,7 @@
                                  (org-capture-refile . "")
                                  (Man-completion-table . "^")
                                  (woman . "^")))
-    (ivy-use-virtual-buffers t)
+    (ivy-use-virtual-buffers nil)
     ; }}}
 
   :config
