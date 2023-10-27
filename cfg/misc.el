@@ -3,7 +3,7 @@
 ; {{{ wrapping
 (setq-default fill-column 88)
 (global-visual-line-mode t)
-(add-hook 'text-mode-hook #'auto-fill-mode) ; hard wrap
+(add-hook 'text-mode-hook 'auto-fill-mode) ; hard wrap
 (ldr-defkm "Twh" 'auto-fill-mode)
 
 (use-package visual-fill-column
@@ -33,6 +33,9 @@
 (setq inhibit-startup-message t)
 (setq inhibit-startup-echo-area-message t)
 (setq server-client-instructions nil)
+
+; Monday is the start of the week.
+(setq calendar-week-start-day 1)
 
 ; save command history
 (savehist-mode 1)

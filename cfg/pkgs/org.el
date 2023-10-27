@@ -23,6 +23,7 @@
     ; {{{ custom keymaps (org)
     (ldr-defkm "a" 'org-agenda)
     (ldr-defkm "A" 'my-org-goto-agenda-dir)
+    (ldr-defkm "t" 'my-org-capture-task-school)
     (ldr-defkm "c" 'my-org-capture-slipbox)
     (ldr-defkm "C" 'my-org-goto-capture-file)
 
@@ -115,6 +116,14 @@
     (org-special-ctrl-a/e t)
     (org-insert-heading-respect-content t)
 
+    (org-agenda-format-date "%Y.%m.%d:%u")
+    (org-agenda-prefix-format
+      '((agenda . " %i %-10:c%?-12t% s")
+        (timeline . "  % s")
+        (todo . " %i %-10:c")
+        (tags . " %i %-10:c")
+        (search . " %i %-10:c")))
+
     (org-image-actual-width nil)
     ; }}}
 
@@ -181,12 +190,21 @@
     ; {{{ quick capture and goto capture file
     (setq my-org-capture-file (concat org-directory "/capture.org"))
     (setq org-capture-templates
-      `(("s" "Slipbox" entry (file ,my-org-capture-file) "* [%<%Y-%m-%d %H:%M>] %?"
-        :empty-lines-before 2)))
+      `(("s" "slipbox" entry (file ,my-org-capture-file) "* [%<%Y-%m-%d %H:%M>] %?"
+          :empty-lines-before 2)
+        ("t" "task/school" entry
+          (file+headline ,(concat (car org-agenda-files) "/school.org") "tasks")
+          "* TODO [#3] %?\n   DEADLINE: "
+          :empty-lines 2)))
 
     (defun my-org-capture-slipbox ()
       (interactive)
       (org-capture nil "s")
+      (evil-insert-state))
+
+    (defun my-org-capture-task-school ()
+      (interactive)
+      (org-capture nil "t")
       (evil-insert-state))
 
     (defun my-org-goto-capture-file ()
