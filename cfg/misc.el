@@ -39,3 +39,9 @@
 
 ; save command history
 (savehist-mode 1)
+
+; always use symmetric encryption
+(setq epa-file-select-keys 'symmetric)
+
+; use minibuffer for pinentry
+(setq epa-pinentry-mode 'loopback)

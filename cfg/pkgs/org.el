@@ -16,16 +16,21 @@
 
   :commands
     my-org-capture-slipbox
+    my-org-capture-journal
+    my-org-capture-agenda
     my-org-goto-capture-file
+    my-org-goto-journal-file
     my-org-goto-agenda-dir
 
   :init
     ; {{{ custom keymaps (org)
     (ldr-defkm "a" 'org-agenda)
-    (ldr-defkm "A" 'my-org-goto-agenda-dir)
-    (ldr-defkm "t" 'my-org-capture-task-school)
-    (ldr-defkm "c" 'my-org-capture-slipbox)
-    (ldr-defkm "C" 'my-org-goto-capture-file)
+    (ldr-defkm "cc" 'my-org-capture-slipbox)
+    (ldr-defkm "gc" 'my-org-goto-capture-file)
+    (ldr-defkm "cj" 'my-org-capture-journal)
+    (ldr-defkm "gj" 'my-org-goto-journal-file)
+    (ldr-defkm "ca" 'my-org-capture-agenda)
+    (ldr-defkm "ga" 'my-org-goto-agenda-dir)
 
     ; magic
     (ldr-defkm 'org-mode-map "SPC" 'org-ctrl-c-ctrl-c)
@@ -188,28 +193,41 @@
     ; }}}
 
     ; {{{ quick capture and goto capture file
-    (setq my-org-capture-file (concat org-directory "/capture.org"))
+    (setq my-org-slipbox-file (concat org-directory "/capture.org"))
+    (setq my-org-journal-file (concat org-directory "/secure/journal.org.gpg"))
+
     (setq org-capture-templates
-      `(("s" "slipbox" entry (file ,my-org-capture-file) "* [%<%Y-%m-%d %H:%M>] %?"
-          :empty-lines-before 2)
+      `(("s" "slipbox" entry (file ,my-org-slipbox-file) "* [%<%Y-%m-%d %H:%M>] %?"
+         :empty-lines-before 2)
+        ("j" "journal" entry (file ,my-org-journal-file) "* [%<%Y-%m-%d>]\n  - %?"
+         :empty-lines-before 2)
         ("t" "task/school" entry
-          (file+headline ,(concat (car org-agenda-files) "/school.org") "tasks")
-          "* TODO [#3] %?\n   DEADLINE: "
-          :empty-lines 2)))
+         (file+headline ,(concat (car org-agenda-files) "/school.org") "tasks")
+         "* TODO [#3] %?\n   DEADLINE: "
+         :empty-lines 2)))
 
     (defun my-org-capture-slipbox ()
       (interactive)
       (org-capture nil "s")
       (evil-insert-state))
 
-    (defun my-org-capture-task-school ()
+    (defun my-org-capture-journal ()
+      (interactive)
+      (org-capture nil "j")
+      (evil-insert-state))
+
+    (defun my-org-capture-agenda ()
       (interactive)
       (org-capture nil "t")
       (evil-insert-state))
 
     (defun my-org-goto-capture-file ()
       (interactive)
-      (find-file my-org-capture-file)))
+      (find-file my-org-slipbox-file))
+
+    (defun my-org-goto-journal-file ()
+      (interactive)
+      (find-file my-org-journal-file)))
     ; }}}
 ; }}}
 
