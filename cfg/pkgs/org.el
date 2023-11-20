@@ -242,6 +242,9 @@
     ; {{{ custom options
     (org-roam-directory org-directory)
 
+    ; prevent encrypted files from being included in org-roam
+    (org-roam-file-exclude-regexp '("data/" ".*[.]org[.]gpg$"))
+
     ; node display in capture/find selector
     (org-roam-node-display-template
       (concat
