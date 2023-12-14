@@ -100,6 +100,9 @@
 
 ; org
 (loadcfg "pkgs/org")
+
+; misc packages
+(loadcfg "pkgs/misc")
 ; }}}
 
 ; base emacs config

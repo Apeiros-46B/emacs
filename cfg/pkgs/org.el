@@ -419,3 +419,45 @@
     (org-appear-trigger        'always))
     ; }}}
 ; }}}
+
+; {{{ org-tree-slide
+(use-package org-tree-slide
+  :after (org hide-mode-line)
+
+  :commands
+    org-tree-slide-mode
+    org-tree-slide-move-next-tree
+    org-tree-slide-move-previous-tree
+    org-tree-slide-content
+
+  :hook
+    (org-tree-slide-mode . hide-mode-line-mode)
+    (org-tree-slide-mode . (lambda ()
+      (hide-mode-line-mode)
+      (if (boundp 'my-presentation-active)
+        (progn
+          (makunbound 'my-presentation-active)
+          (text-scale-set 0))
+        (setq my-presentation-active t)
+        (text-scale-set 4))))
+
+  :custom
+    ; {{{ custom options
+    (org-tree-slide-header nil)
+    (org-tree-slide-slide-in-effect nil)
+    (org-tree-slide-never-touch-face t)
+    (org-tree-slide-activate-message "Presentation started")
+    (org-tree-slide-deactivate-message "Quit")
+    (org-tree-slide-subtrees-skipped nil)
+    (org-tree-slide-breadcrumbs "->")
+    ; }}}
+  )
+
+  :init
+    ; {{{ custom keymaps
+    (ldr-defkm 'org-mode-map "os" 'org-tree-slide-mode)
+    (ldr-defkm 'org-tree-slide-mode-map "q" 'org-tree-slide-mode)
+    (ldr-defkm 'org-tree-slide-mode-map "C-SPC" 'org-tree-slide-move-previous-tree)
+    (ldr-defkm 'org-tree-slide-mode-map "SPC" 'org-tree-slide-move-next-tree)
+    ; }}}
+; }}}
