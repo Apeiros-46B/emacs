@@ -35,13 +35,14 @@
     ; magic
     (ldr-defkm 'org-mode-map "SPC" 'org-ctrl-c-ctrl-c)
 
-    (ldr-defkm 'org-mode-map "op" 'org-priority)
-    (ldr-defkm 'org-mode-map "ot" 'org-time-stamp)
-    (ldr-defkm 'org-mode-map "ol" 'org-latex-preview)
-
     ; link creation
     (ldr-defkm "ol" 'org-store-link)
     (ldr-defkm 'org-mode-map "oi" 'org-insert-link)
+
+    (ldr-defkm 'org-mode-map "op" 'org-priority)
+    (ldr-defkm 'org-mode-map "ot" 'org-time-stamp)
+    (ldr-defkm 'org-mode-map "oL" 'org-latex-preview)
+    (ldr-defkm 'org-mode-map "oI" 'org-toggle-inline-images)
 
     (defkm 'normal 'org-mode-map "C-]" 'org-open-at-point)
     (defkm 'normal 'org-mode-map "RET" 'org-open-at-point)
@@ -130,6 +131,8 @@
         (search . " %i %-10:c")))
 
     (org-image-actual-width nil)
+    (org-image-max-width 660) ; 3/4 * fillcolumn(88) * charwidth(10)
+    (org-startup-with-inline-images t)
     ; }}}
 
     ; {{{ visuals
