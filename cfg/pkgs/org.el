@@ -101,26 +101,20 @@
     (org-return-follows-link nil)
     (org-cycle-separator-lines 2)
 
-    (org-todo-keywords
-      '((sequence "TODO(t!)"
-                  "NOW(n!)"
-                  "WAIT(w!)"
-                  "MAYBE(m!)"
-                  "ONGOING(o!)"
-                  "|"
-                  "DONE(d!)"
-                  "CANCELLED(c!)"
-                  "DELEGATED(D!)")))
-
-    (org-priority-highest 1)
-    (org-priority-lowest  8)
-    (org-priority-default 3)
-
     (org-auto-align-tags nil)
     (org-tags-column 0)
     (org-catch-invisible-edits 'show-and-error)
     (org-special-ctrl-a/e t)
     (org-insert-heading-respect-content t)
+
+    (org-todo-keywords
+      '((sequence "TODO(t!)" "MAYBE(m!)" "WAIT(w!)" "|" "DONE(d!)")))
+
+    (org-priority-highest 1)
+    (org-priority-lowest  8)
+    (org-priority-default 3)
+
+    (org-agenda-repeating-timestamp-show-all nil)
 
     (org-agenda-format-date "%Y.%m.%d:%u")
     (org-agenda-prefix-format
@@ -343,28 +337,20 @@
   :custom
     ; {{{ custom options
     (org-modern-star '("◉" " ◈" "  ◉" "   ◈" "    ◉"))
-    (org-modern-timestamp '(" %Y.%m.%d:%u " . " %H:%M "))
+
+    ; FIX: setting a custom format breaks editing and showing extra info (repeats)
+    ; (org-modern-timestamp '(" %Y.%m.%d:%u " . " %H:%M "))
     (org-modern-table-vertical 1)
 
     (org-modern-list
           '((?- . "•")
-            (?+ . "•")
-            (?* . "•")))
+            (?+ . "▪")
+            (?* . "▸")))
 
     (org-modern-checkbox
           '((?X  . "[󰄬]")
             (?-  . "[-]")
             (?\s . "[ ]")))
-
-    (org-modern-todo-faces
-          `(("NOW"       :foreground ,(getcol 'bg1) :background ,(getcol 'red))
-            ("WAIT"      :foreground ,(getcol 'bg1) :background ,(getcol 'orange))
-            ("MAYBE"     :foreground ,(getcol 'bg1) :background ,(getcol 'purple))
-            ("TODO"      :foreground ,(getcol 'bg1) :background ,(getcol 'fg2))
-            ("ONGOING"   :foreground ,(getcol 'bg1) :background ,(getcol 'green))
-            ("DONE"      :foreground ,(getcol 'fg2) :background ,(getcol 'bg3))
-            ("CANCELLED" :foreground ,(getcol 'fg2) :background ,(getcol 'bg3))
-            ("DELEGATED" :foreground ,(getcol 'fg2) :background ,(getcol 'bg3))))
 
     (org-modern-block-name '("$" . "$"))
     (org-modern-block-fringe 16)
@@ -375,8 +361,26 @@
     (org-modern-progress nil)
     ; }}}
 
+    ; {{{ custom todo and priority faces
+    (org-modern-todo-faces
+          `(("TODO"      :foreground ,(getcol 'fg2) :background ,(getcol 'bg3))
+            ("MAYBE"     :foreground ,(getcol 'bg1) :background ,(getcol 'purple))
+            ("WAIT"      :foreground ,(getcol 'bg1) :background ,(getcol 'green))
+            ("DONE"      :foreground ,(getcol 'fg2) :background ,(getcol 'bg3))))
+
+    (org-modern-priority-faces
+          `((?1 :foreground ,(getcol 'bg1) :background ,(getcol 'red))
+            (?2 :foreground ,(getcol 'bg1) :background ,(getcol 'yellow))
+            (?3 :foreground ,(getcol 'bg1) :background ,(getcol 'green))
+            (?4 :foreground ,(getcol 'bg1) :background ,(getcol 'fg2))
+            (?5 :foreground ,(getcol 'fg2) :background ,(getcol 'bg3))
+            (?6 :foreground ,(getcol 'fg2) :background ,(getcol 'bg3))
+            (?7 :foreground ,(getcol 'fg2) :background ,(getcol 'bg3))
+            (?8 :foreground ,(getcol 'fg2) :background ,(getcol 'bg3))))
+    ; }}}
+
   :config
-    ; {{{ custom faces
+    ; {{{ other custom faces
     (set-face-attribute 'org-modern-symbol nil :foreground (getcol 'fg2))
     (set-face-attribute 'org-modern-label nil :foreground (getcol 'fg2) :height 0.9)
 
