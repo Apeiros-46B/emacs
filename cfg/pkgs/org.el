@@ -468,3 +468,27 @@
     (ldr-defkm 'org-tree-slide-mode-map "SPC" 'org-tree-slide-move-next-tree)
     ; }}}
 ; }}}
+
+; {{{ org-download
+(use-package org-download
+  :after org
+
+  :custom
+    ; custom options
+    (org-download-image-dir "./.img")
+    (org-download-annotate-function (lambda (link) ""))
+
+  :init
+    ; custom keymaps
+    (ldr-defkm 'normal 'org-mode-map "ip" 'org-download-clipboard)
+    (ldr-defkm 'normal 'org-mode-map "iP" 'org-download-yank)
+    (ldr-defkm 'normal 'org-mode-map "ii" 'org-download-image)
+    (ldr-defkm 'normal 'org-mode-map "ir" 'org-download-rename-at-point)
+    (ldr-defkm 'normal 'org-mode-map "id" 'org-download-delete)
+
+  :config
+    ; override annotation format
+    (defun org-download-annotate-default (link)
+      "Annotate LINK with the time of download."
+      ""))
+; }}}
