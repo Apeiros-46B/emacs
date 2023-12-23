@@ -475,8 +475,7 @@
 
   :custom
     ; custom options
-    (org-download-image-dir "./.img")
-    (org-download-annotate-function (lambda (link) ""))
+    (org-download-image-dir "./.org_img")
 
   :init
     ; custom keymaps
@@ -484,11 +483,19 @@
     (ldr-defkm 'normal 'org-mode-map "iP" 'org-download-yank)
     (ldr-defkm 'normal 'org-mode-map "ii" 'org-download-image)
     (ldr-defkm 'normal 'org-mode-map "ir" 'org-download-rename-at-point)
-    (ldr-defkm 'normal 'org-mode-map "id" 'org-download-delete)
+    (ldr-defkm 'normal 'org-mode-map "id" 'my-org-download-delete)
 
   :config
-    ; override annotation format
-    (defun org-download-annotate-default (link)
-      "Annotate LINK with the time of download."
-      ""))
+    ; no annotations
+    (defun org-download-annotate-default (link) "Annotate LINK." "")
+
+    ; deletion for previewed images
+    (defun my-org-download-delete ()
+      (interactive)
+
+      ; unrender preview
+      (org-remove-inline-images (point) (+ 1 (point)))
+
+      (move-point-visually 1) ; move point onto the link body
+      (org-download-delete))) ; delete image
 ; }}}
