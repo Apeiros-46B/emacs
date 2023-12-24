@@ -194,9 +194,9 @@
     (setq my-org-journal-file (concat org-directory "/secure/journal.org.gpg"))
 
     (setq org-capture-templates
-      `(("s" "slipbox" entry (file ,my-org-slipbox-file) "* [%<%Y-%m-%d %H:%M>] %?"
+      `(("s" "slipbox" entry (file ,my-org-slipbox-file) "* [%<%Y-%m-%d %a %H:%M>] %?"
          :empty-lines-before 2)
-        ("j" "journal" entry (file ,my-org-journal-file) "* [%<%Y-%m-%d>]\n  - %?"
+        ("j" "journal" entry (file ,my-org-journal-file) "* [%<%Y-%m-%d %a>]\n  - %?"
          :empty-lines-before 2)
         ("t" "task/school" entry
          (file+headline ,(concat (car org-agenda-files) "/school.org") "tasks")
