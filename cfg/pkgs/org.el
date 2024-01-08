@@ -114,8 +114,8 @@
     (org-priority-lowest  8)
     (org-priority-default 3)
 
+    (org-agenda-skip-scheduled-if-deadline-is-shown t)
     (org-agenda-repeating-timestamp-show-all nil)
-
     (org-agenda-format-date "%Y.%m.%d:%u")
     (org-agenda-prefix-format
       '((agenda . " %i %-10:c%?-12t% s")
@@ -143,6 +143,9 @@
     ; }}}
 
   :config
+    ; org-protocol
+    (require 'org-protocol)
+
     ; option depends on default value
     (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.6))
 
@@ -190,6 +193,8 @@
     ; }}}
 
     ; {{{ quick capture and goto capture file
+    (add-hook 'org-capture-mode-hook 'evil-insert-state)
+
     (setq my-org-slipbox-file (concat org-directory "/capture.org"))
     (setq my-org-journal-file (concat org-directory "/secure/journal.org.gpg"))
 
@@ -201,30 +206,17 @@
         ("t" "task/school" entry
          (file+headline ,(concat (car org-agenda-files) "/school.org") "tasks")
          "* TODO [#3] %?\n   DEADLINE: "
-         :empty-lines 2)))
+         :empty-lines 2)
+        ("w" "website" entry (file ,my-org-slipbox-file)
+          "* [%<%Y-%m-%d %a %H:%M>] %?\n  - [[%:link][%:description]]\n  - \"%i\""
+          :empty-lines 1)))
 
-    (defun my-org-capture-slipbox ()
-      (interactive)
-      (org-capture nil "s")
-      (evil-insert-state))
+    (defun my-org-capture-slipbox () (interactive) (org-capture nil "s"))
+    (defun my-org-capture-journal () (interactive) (org-capture nil "j"))
+    (defun my-org-capture-agenda  () (interactive) (org-capture nil "t"))
 
-    (defun my-org-capture-journal ()
-      (interactive)
-      (org-capture nil "j")
-      (evil-insert-state))
-
-    (defun my-org-capture-agenda ()
-      (interactive)
-      (org-capture nil "t")
-      (evil-insert-state))
-
-    (defun my-org-goto-capture-file ()
-      (interactive)
-      (find-file my-org-slipbox-file))
-
-    (defun my-org-goto-journal-file ()
-      (interactive)
-      (find-file my-org-journal-file)))
+    (defun my-org-goto-capture-file () (interactive) (find-file my-org-slipbox-file))
+    (defun my-org-goto-journal-file () (interactive) (find-file my-org-journal-file)))
     ; }}}
 ; }}}
 
