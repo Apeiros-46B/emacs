@@ -15,7 +15,7 @@
 ; {{{ backup settings
 (setq
   ; backup files in ~/emacs/config/path/backups
-  backup-directory-alist `(("." . ,(concat (file-truename user-emacs-directory) "cache/backups")))
+  backup-directory-alist `(("." . ,(get-cfg-path "cache/backups")))
   backup-by-copying t
   delete-old-versions t
   kept-new-versions 6

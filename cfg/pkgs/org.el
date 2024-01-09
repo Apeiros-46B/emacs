@@ -23,7 +23,7 @@
     my-org-goto-agenda-dir
 
   :init
-    ; {{{ custom keymaps (org)
+    ; {{{ custom keymaps
     (ldr-defkm "a" 'org-agenda)
     (ldr-defkm "cc" 'my-org-capture-slipbox)
     (ldr-defkm "gc" 'my-org-goto-capture-file)
@@ -70,21 +70,6 @@
     (ldr-defkm 'normal 'org-mode-map "*" 'org-toggle-heading)
     ; }}}
 
-    ; {{{ custom keymaps (org-roam)
-    (ldr-defkm "rl" 'org-roam-buffer-toggle)
-    (ldr-defkm "rf" 'org-roam-node-find)
-    (ldr-defkm "ri" 'org-roam-node-insert)
-    (ldr-defkm "rg" 'org-roam-graph)
-    (ldr-defkm "rn" 'org-roam-capture)
-    (ldr-defkm "rd" 'org-roam-dailies-capture-today)
-    (ldr-defkm "rD" 'org-roam-dailies-goto-today)
-    (ldr-defkm "rs" 'org-roam-db-sync)
-    ; }}}
-
-    ; {{{ custom keymaps (org-roam-ui)
-    (ldr-defkm "ru" 'org-roam-ui-open)
-    ; }}}
-
   :custom
     ; {{{ custom options
     ; {{{ functionality
@@ -92,7 +77,7 @@
     (org-agenda-files `(,(concat org-directory "/agenda")))
 
     ; don't clutter my fs with latex image cache
-    (org-preview-latex-image-directory (concat (file-truename user-emacs-directory) "cache/ltximg/" (buffer-file-name)))
+    (org-preview-latex-image-directory (get-cfg-path "cache/ltximg/"))
 
     (org-log-into-drawer t)
     (org-log-done 'time)
@@ -227,6 +212,18 @@
   :hook
     (org-roam-capture-new-node . evil-insert-state)
 
+  :init
+    ; {{{ custom keymaps
+    (ldr-defkm "rl" 'org-roam-buffer-toggle)
+    (ldr-defkm "rf" 'org-roam-node-find)
+    (ldr-defkm "ri" 'org-roam-node-insert)
+    (ldr-defkm "rg" 'org-roam-graph)
+    (ldr-defkm "rn" 'org-roam-capture)
+    (ldr-defkm "rd" 'org-roam-dailies-capture-today)
+    (ldr-defkm "rD" 'org-roam-dailies-goto-today)
+    (ldr-defkm "rs" 'org-roam-db-sync)
+    ; }}}
+
   :custom
     ; {{{ custom options
     (org-roam-directory org-directory)
@@ -288,6 +285,10 @@
   :hook
     (org-mode . (lambda ()
       (unless (default-value 'org-roam-ui-mode) org-roam-ui-mode)))
+
+  :init
+    ; custom keymaps
+    (ldr-defkm "ru" 'org-roam-ui-open)
 
   :custom
     ; {{{ custom options
@@ -432,7 +433,6 @@
   :hook
     (org-tree-slide-mode . hide-mode-line-mode)
     (org-tree-slide-mode . (lambda ()
-      (hide-mode-line-mode)
       (if (boundp 'my-presentation-active)
         (progn
           (makunbound 'my-presentation-active)
@@ -490,4 +490,72 @@
 
       (move-point-visually 1) ; move point onto the link body
       (org-download-delete))) ; delete image
+; }}}
+
+; {{{ org-pomodoro
+(use-package org-pomodoro
+  :after org
+
+  :commands
+    org-pomodoro
+
+  :init
+    ; {{{ desktop notification helper
+    (defvar my-org-pomodoro-notification-id nil)
+
+    ; TODO: fix
+    (defun my-org-pomodoro-notify (body)
+      (lambda ()
+        (setq my-org-pomodoro-notification-id
+          (notifications-notify
+            :title "org-pomodoro"
+            :body body
+            :replaces-id my-org-pomodoro-notification-id))))
+    ; }}}
+
+    ; custom keymaps
+    (ldr-defkm "p" 'org-pomodoro)
+
+  :custom
+    ; {{{ custom options
+    (org-pomodoro-ask-upon-killing nil)
+    (org-pomodoro-manual-break t)
+
+    (org-pomodoro-length 25)
+    (org-pomodoro-short-break-length 5)
+    (org-pomodoro-long-break-length 10)
+
+    (org-pomodoro-format "work: %s")
+    (org-pomodoro-overtime-format "work: +%s")
+    (org-pomodoro-short-break-format "break: %s")
+    (org-pomodoro-long-break-format "break: %s")
+
+    (org-pomodoro-ticking-sound-p t)
+    (org-pomodoro-ticking-sound-states '(:short-break :long-break))
+
+    (org-pomodoro-ticking-sound (get-cfg-path "assets/pomodoro/tick.wav"))
+    (org-pomodoro-finished-sound (get-cfg-path "assets/pomodoro/break.wav"))
+    (org-pomodoro-overtime-sound (get-cfg-path "assets/pomodoro/overtime.wav"))
+    (org-pomodoro-short-break-sound (get-cfg-path "assets/pomodoro/work.wav"))
+    (org-pomodoro-long-break-sound (get-cfg-path "assets/pomodoro/work.wav"))
+    ; }}}
+
+  :config
+    ; disable default notifications
+    (defun org-pomodoro-notify (title msg))
+
+    ; {{{ custom faces
+    (set-face-attribute 'org-pomodoro-mode-line          nil :foreground (getcol 'fg1))
+    (set-face-attribute 'org-pomodoro-mode-line-break    nil :foreground (getcol 'fg2))
+    (set-face-attribute 'org-pomodoro-mode-line-overtime nil :foreground (getcol 'red))
+    ; }}}
+
+  )
+  ; {{{ notifications
+  ; :hook
+  ;   (org-pomodoro-break-finished . (my-org-pomodoro-notify "Break finished"))
+  ;   (org-pomodoro-finished       . (my-org-pomodoro-notify "Work round finished"))
+  ;   (org-pomodoro-overtime       . (my-org-pomodoro-notify "Entering overtime"))
+  ;   (org-pomodoro-killed         . (my-org-pomodoro-notify "Pomodoro cancelled")))
+  ; }}}
 ; }}}

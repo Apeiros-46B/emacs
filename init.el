@@ -42,6 +42,14 @@
 (setq use-package-always-ensure t)
 ; }}}
 
+; {{{ GCMH
+(use-package gcmh
+  :straight (gcmh :host gitlab :repo "koral/gcmh")
+  :demand t
+  :config
+    (gcmh-mode 1))
+; }}}
+
 ; {{{ helper functions
 (setq customcolors
   '(bg1    "#2b3339"
@@ -66,8 +74,11 @@
 ; get a color
 (defun getcol (name) (plist-get customcolors name))
 
+; get a file path relative to the config folder
+(defun get-cfg-path (&rest paths) (apply #'concat (file-truename user-emacs-directory) paths))
+
 ; load a config
-(defun loadcfg (file) (load (concat (expand-file-name file (concat (file-truename user-emacs-directory) "cfg/")) ".el")))
+(defun loadcfg (file) (load (concat (expand-file-name file (get-cfg-path "cfg/")) ".el")))
 ; }}}
 
 ; {{{ packages & config

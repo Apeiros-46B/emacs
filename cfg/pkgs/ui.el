@@ -121,6 +121,7 @@
     ; {{{ override nano-modeline functions
     ; {{{ default mode
     (defun nano-modeline-default-mode (&optional icon)
+      (defvar org-pomodoro-mode-line)
       (let ((icon (or icon (plist-get (cdr (assoc 'text-mode nano-modeline-mode-formats)) :icon)))
           ; {{{ buffer name (taking into account narrowed bufs)
           (buffer-name (cond
@@ -141,15 +142,19 @@
           ; {{{ others
           (mode-name (nano-modeline-mode-name))
           (branch    (nano-modeline-vc-branch))
-          (position  (format-mode-line "%l:%c")))
+          (position  (format-mode-line "%l:%c"))
+          (pomodoro  (and (boundp 'org-pomodoro-mode-line) org-pomodoro-mode-line)))
           ; }}}
 
         ; {{{ render modeline
         (nano-modeline-render
           icon
           buffer-name
-          (concat "(" mode-name (if branch (concat ", " branch) "") ")")
-          position)))
+          (concat "(" mode-name (if branch (concat ", " branch) "") ")"
+            ; pomodoro ; TODO
+            )
+          position
+          )))
         ; }}}
     ; }}}
 
