@@ -3,10 +3,23 @@
 (use-package counsel
   :init
     ; {{{ custom keybindings
-    (ldr-defkm "bf" 'counsel-switch-buffer)
-    (ldr-defkm "fb" 'counsel-bookmark)
+    (ldr-defkm "fb" 'counsel-switch-buffer)
+    (ldr-defkm "fc" 'counsel-unicode-char)
+    (ldr-defkm "ff" 'counsel-fzf)
+    (ldr-defkm "HF" 'counsel-faces)
     (ldr-defkm "fr" 'counsel-recentf)
     (ldr-defkm "fw" 'counsel-rg))
+    (ldr-defkm "f'" 'counsel-evil-marks)
+    (ldr-defkm "f;" 'counsel-bookmark)
+
+    ; org-mode
+    (ldr-defkm "oa"    'counsel-org-entity)
+    (ldr-defkm "oe"    'counsel-org-entity)
+    (ldr-defkm "oo"    'counsel-org-goto)
+    (ldr-defkm "oO"    'counsel-org-goto-all)
+    (ldr-defkm "o SPC" 'counsel-org-tag)
+
+    (ldr-defkm 'org-agenda-mode-map "o SPC" 'counsel-org-tag-agenda)
     ; }}}
 
 (use-package smex)

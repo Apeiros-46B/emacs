@@ -10,5 +10,13 @@
 (ldr-defkm "j" 'previous-buffer)
 (ldr-defkm "k" 'next-buffer)
 
-; other
-(ldr-defkm "ff" 'find-file)
+; help
+(ldr-defkm "Hb" 'describe-bindings)
+(ldr-defkm "Hf" 'describe-function)
+(ldr-defkm "Hj" 'describe-key-briefly)
+(ldr-defkm "Hk" 'describe-key)
+(ldr-defkm "HK" 'describe-keymap)
+(ldr-defkm "Hm" 'describe-mode)
+(ldr-defkm "HM" 'describe-minor-mode)
+(ldr-defkm "Hs" 'describe-symbol)
+(ldr-defkm "Hv" 'describe-variable)
