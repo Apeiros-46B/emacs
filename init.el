@@ -103,9 +103,6 @@
 ; evil
 (loadcfg "pkgs/evil")
 
-; hop
-(loadcfg "pkgs/hop")
-
 ; ivy & related
 (loadcfg "pkgs/ivy")
 
