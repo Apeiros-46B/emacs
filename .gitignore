@@ -2,7 +2,8 @@
 /cache/
 
 /org-persist/
-/straight/
+/straight/*
+!/straight/versions/
 
 /.org-id-locations
 /org-roam.db
