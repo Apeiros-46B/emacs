@@ -79,6 +79,14 @@
 
 ; load a config
 (defun loadcfg (file) (load (concat (expand-file-name file (get-cfg-path "cfg/")) ".el")))
+
+; define or set faces, akin to custom-set-faces
+(defun custom-defset-faces (&rest args)
+  (progn
+    (dolist (pair args)
+      (let ((face (car pair)))
+        (if (not (facep face)) (defface face '() "Defined via custom-defset-faces"))))
+    (apply #'custom-set-faces args)))
 ; }}}
 
 ; {{{ packages & config

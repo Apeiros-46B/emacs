@@ -3,6 +3,13 @@
 ; {{{ org
 (use-package org
   :mode ("\\.org\\'" . org-mode)
+  :commands
+    my-org-capture-slipbox
+    my-org-capture-journal
+    my-org-capture-agenda
+    my-org-goto-capture-file
+    my-org-goto-journal-file
+    my-org-goto-agenda-dir
 
   ; skip subtree when folding/cycling
   :hook
@@ -13,14 +20,6 @@
       ; override the evil-org-mode keymaps
       (defkm 'normal 'org-agenda-mode-map "C-]" 'org-agenda-goto)
       (defkm 'normal 'org-agenda-mode-map "RET" 'org-agenda-goto)))
-
-  :commands
-    my-org-capture-slipbox
-    my-org-capture-journal
-    my-org-capture-agenda
-    my-org-goto-capture-file
-    my-org-goto-journal-file
-    my-org-goto-agenda-dir
 
   :init
     ; {{{ custom keymaps
