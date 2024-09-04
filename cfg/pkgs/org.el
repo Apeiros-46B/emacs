@@ -4,8 +4,7 @@
 (use-package org
   :mode ("\\.org\\'" . org-mode)
   :commands
-    my-org-capture-slipbox
-    my-org-capture-journal
+    my-org-capture-tmp
     my-org-capture-agenda
     my-org-goto-capture-file
     my-org-goto-journal-file
@@ -24,10 +23,8 @@
   :init
     ; {{{ custom keymaps
     (ldr-defkm "a" 'org-agenda)
-    (ldr-defkm "cc" 'my-org-capture-slipbox)
-    (ldr-defkm "gc" 'my-org-goto-capture-file)
-    (ldr-defkm "cj" 'my-org-capture-journal)
-    (ldr-defkm "gj" 'my-org-goto-journal-file)
+    (ldr-defkm "cc" 'my-org-capture-tmp)
+    (ldr-defkm "gc" 'my-org-goto-tmp-file)
     (ldr-defkm "ca" 'my-org-capture-agenda)
     (ldr-defkm "ga" 'my-org-goto-agenda-dir)
 
@@ -170,37 +167,31 @@
          ((org-agenda-skip-function
          '(or (my-org-skip-subtree-if-priority 1)
             (org-agenda-skip-if nil '(scheduled deadline))))))))))
-
-    (defun my-org-goto-agenda-dir ()
-      (interactive)
-      (dired org-agenda-files))
     ; }}}
 
-    ; {{{ quick capture and goto capture file
+    ; {{{ quick capture and goto capture files
     (add-hook 'org-capture-mode-hook 'evil-insert-state)
 
-    (setq my-org-slipbox-file (concat org-directory "/capture.org"))
-    (setq my-org-journal-file (concat org-directory "/secure/journal.org.gpg"))
+    (setq my-org-tmp-file (concat org-directory "/tmp.org"))
 
     (setq org-capture-templates
-      `(("s" "slipbox" entry (file ,my-org-slipbox-file) "* [%<%Y-%m-%d %a %H:%M>] %?"
+      `(("t" "temporary" entry (file ,my-org-tmp-file) "* [%<%Y-%m-%d %a %H:%M>] %?"
          :empty-lines-before 2)
-        ("j" "journal" entry (file ,my-org-journal-file) "* [%<%Y-%m-%d %a>]\n  - %?"
-         :empty-lines-before 2)
-        ("t" "task/school" entry
+        ("a" "task/school" entry
          (file+headline ,(concat (car org-agenda-files) "/school.org") "tasks")
          "* TODO [#3] %?\n   DEADLINE: "
          :empty-lines 2)
-        ("w" "website" entry (file ,my-org-slipbox-file)
+        ("w" "website" entry (file ,my-org-tmp-file)
           "* [%<%Y-%m-%d %a %H:%M>] %?\n  - [[%:link][%:description]]\n  - \"%i\""
           :empty-lines 1)))
 
-    (defun my-org-capture-slipbox () (interactive) (org-capture nil "s"))
-    (defun my-org-capture-journal () (interactive) (org-capture nil "j"))
-    (defun my-org-capture-agenda  () (interactive) (org-capture nil "t"))
+    (defun my-org-capture-tmp () (interactive) (org-capture nil "t"))
+    (defun my-org-capture-agenda () (interactive) (org-capture nil "a"))
 
-    (defun my-org-goto-capture-file () (interactive) (find-file my-org-slipbox-file))
-    (defun my-org-goto-journal-file () (interactive) (find-file my-org-journal-file)))
+    (defun my-org-goto-capture-file () (interactive) (find-file my-org-tmp-file))
+    (defun my-org-goto-agenda-dir ()
+      (interactive)
+      (dired org-agenda-files)))
     ; }}}
 ; }}}
 
@@ -257,10 +248,8 @@
       (setq org-roam-capture-templates
         `(,(capture-template "m" 'main  'school)
           ,(capture-template "r" 'ref   'school)
-          ,(capture-template "f" 'final 'school)
           ,(capture-template "M" 'main  'other)
-          ,(capture-template "R" 'ref   'other)
-          ,(capture-template "F" 'final 'other))))
+          ,(capture-template "R" 'ref   'other))))
     ; }}}
 
     ; {{{ node "types"
