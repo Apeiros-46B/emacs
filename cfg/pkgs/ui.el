@@ -38,6 +38,7 @@
 (defun my-apply-frame-settings ()
   (setq default-frame-alist
     (append (list
+      `(background-color . ,(getcol 'bg1))
       '(min-height . 1)
       `(height     . ,(my-scale 40))
       '(min-width  . 1)

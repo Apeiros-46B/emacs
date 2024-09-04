@@ -328,7 +328,9 @@
 
   :custom
     ; {{{ custom options
-    (org-modern-star '("◉" " ◈" "  ◉" "   ◈" "    ◉"))
+    (org-modern-star "replace")
+    (org-modern-replace-stars "◉◈◉◈◉")
+    (org-modern-hide-stars " ")
 
     ; FIX: setting a custom format breaks editing and showing extra info (repeats)
     ; (org-modern-timestamp '(" %Y.%m.%d:%u " . " %H:%M "))
