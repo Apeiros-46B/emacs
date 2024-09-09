@@ -28,7 +28,6 @@ thanks to [nano-theme](https://github.com/rougier/nano-theme) and [nano-modeline
   - `evil-numbers`
   - `evil-surround`
   - `evil-org`
-- `hop`
 - `ivy`
   - `counsel`
 - `smex`

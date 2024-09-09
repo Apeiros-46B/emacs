@@ -26,8 +26,10 @@
 ; no blink
 (blink-cursor-mode 0)
 
-; scroll one line at a time
-(setq scroll-conservatively most-positive-fixnum)
+; scrolling
+(setq scroll-conservatively most-positive-fixnum) ; one line at a time
+(setq fast-but-imprecise-scrolling t)
+(setq jit-lock-defer-time 0)
 
 ; no startup messages
 (setq inhibit-startup-message t)

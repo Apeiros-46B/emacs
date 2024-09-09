@@ -10,13 +10,14 @@
     my-org-goto-journal-file
     my-org-goto-agenda-dir
 
-  ; skip subtree when folding/cycling
   :hook
+    ; skip subtree when folding/cycling
     (org-cycle . (lambda (state)
       (when (eq state 'children)
         (setq org-cycle-subtree-status 'subtree))))
+
+    ; override the evil-org-mode keymaps
     (evil-org-mode . (lambda ()
-      ; override the evil-org-mode keymaps
       (defkm 'normal 'org-agenda-mode-map "C-]" 'org-agenda-goto)
       (defkm 'normal 'org-agenda-mode-map "RET" 'org-agenda-goto)))
 
@@ -457,7 +458,9 @@
 
   :custom
     ; custom options
-    (org-download-image-dir "./.org_img")
+    (org-download-image-dir (concat org-directory "/img"))
+    (org-download-heading-lvl nil) ; don't save under heading dirs
+    (org-download-abbreviate-filename-function 'expand-file-name) ; absolute paths
 
   :init
     ; custom keymaps
@@ -480,72 +483,4 @@
 
       (move-point-visually 1) ; move point onto the link body
       (org-download-delete))) ; delete image
-; }}}
-
-; {{{ org-pomodoro
-(use-package org-pomodoro
-  :after org
-
-  :commands
-    org-pomodoro
-
-  :init
-    ; {{{ desktop notification helper
-    (defvar my-org-pomodoro-notification-id nil)
-
-    ; TODO: fix
-    (defun my-org-pomodoro-notify (body)
-      (lambda ()
-        (setq my-org-pomodoro-notification-id
-          (notifications-notify
-            :title "org-pomodoro"
-            :body body
-            :replaces-id my-org-pomodoro-notification-id))))
-    ; }}}
-
-    ; custom keymaps
-    (ldr-defkm "p" 'org-pomodoro)
-
-  :custom
-    ; {{{ custom options
-    (org-pomodoro-ask-upon-killing nil)
-    (org-pomodoro-manual-break t)
-
-    (org-pomodoro-length 25)
-    (org-pomodoro-short-break-length 5)
-    (org-pomodoro-long-break-length 10)
-
-    (org-pomodoro-format "work: %s")
-    (org-pomodoro-overtime-format "work: +%s")
-    (org-pomodoro-short-break-format "break: %s")
-    (org-pomodoro-long-break-format "break: %s")
-
-    (org-pomodoro-ticking-sound-p t)
-    (org-pomodoro-ticking-sound-states '(:short-break :long-break))
-
-    (org-pomodoro-ticking-sound (get-cfg-path "assets/pomodoro/tick.wav"))
-    (org-pomodoro-finished-sound (get-cfg-path "assets/pomodoro/break.wav"))
-    (org-pomodoro-overtime-sound (get-cfg-path "assets/pomodoro/overtime.wav"))
-    (org-pomodoro-short-break-sound (get-cfg-path "assets/pomodoro/work.wav"))
-    (org-pomodoro-long-break-sound (get-cfg-path "assets/pomodoro/work.wav"))
-    ; }}}
-
-  :config
-    ; disable default notifications
-    (defun org-pomodoro-notify (title msg))
-
-    ; {{{ custom faces
-    (set-face-attribute 'org-pomodoro-mode-line          nil :foreground (getcol 'fg1))
-    (set-face-attribute 'org-pomodoro-mode-line-break    nil :foreground (getcol 'fg2))
-    (set-face-attribute 'org-pomodoro-mode-line-overtime nil :foreground (getcol 'red))
-    ; }}}
-
-  )
-  ; {{{ notifications
-  ; :hook
-  ;   (org-pomodoro-break-finished . (my-org-pomodoro-notify "Break finished"))
-  ;   (org-pomodoro-finished       . (my-org-pomodoro-notify "Work round finished"))
-  ;   (org-pomodoro-overtime       . (my-org-pomodoro-notify "Entering overtime"))
-  ;   (org-pomodoro-killed         . (my-org-pomodoro-notify "Pomodoro cancelled")))
-  ; }}}
 ; }}}
