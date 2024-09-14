@@ -117,6 +117,9 @@
 ; org
 (loadcfg "pkgs/org")
 
+; yasnippet
+(loadcfg "pkgs/yas")
+
 ; misc packages
 (loadcfg "pkgs/misc")
 ; }}}

@@ -1,0 +1,17 @@
+# -*- mode: snippet -*-
+# name: 3-argument truth table
+# key: @3tb
+# condition: 'auto
+# --
+|---+---+---+---|
+| ${1:p} | ${2:q} | ${3:r} | ${4:x} |
+|---+---+---+---|
+| F | F | F | $0  |
+| F | F | T |   |
+| F | T | F |   |
+| F | T | T |   |
+| T | F | F |   |
+| T | F | T |   |
+| T | T | F |   |
+| T | T | T |   |
+|---+---+---+---|

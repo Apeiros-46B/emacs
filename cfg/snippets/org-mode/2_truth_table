@@ -1,0 +1,13 @@
+# -*- mode: snippet -*-
+# name: 2-input truth table
+# key: @2tb
+# condition: 'auto
+# --
+|---+---+---|
+| ${1:p} | ${2:q} | ${3:x} |
+|---+---+---|
+| F | F | $0  |
+| F | T |   |
+| T | F |   |
+| T | T |   |
+|---+---+---|

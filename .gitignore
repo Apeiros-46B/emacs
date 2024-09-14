@@ -1,6 +1,7 @@
 /auto-save-list/
 /cache/
 /eln-cache/
+/elpa/
 
 /org-persist/
 /straight/*
