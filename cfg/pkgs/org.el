@@ -247,10 +247,9 @@
           :immediate-finish t
           :unnarrowed t))))
       (setq org-roam-capture-templates
-        `(,(capture-template "m" 'main  'school)
-          ,(capture-template "r" 'ref   'school)
-          ,(capture-template "M" 'main  'other)
-          ,(capture-template "R" 'ref   'other))))
+        `(,(capture-template "s" 'main  'school)
+          ,(capture-template "m" 'main  'other)
+          ,(capture-template "r" 'ref   'other))))
     ; }}}
 
     ; {{{ node "types"
