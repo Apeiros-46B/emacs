@@ -92,7 +92,7 @@
 ; {{{ packages & config
 ; some minor tweak packages (e.g. visual-fill-column) are under cfg/misc.el instead
 
-; {{{ general.el
+; {{{ keybinding facilities
 (use-package general)
 
 (general-create-definer defkm

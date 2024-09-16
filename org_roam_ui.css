@@ -1,0 +1,158 @@
+/* css theme for org-roam-ui */
+
+/* USER SETTINGS */
+:root {
+	--fg1: #d3c6aa;
+	--fg2: #859289;
+	--bg1: #2b3339;
+	--bg2: #323c41;
+	--bg3: #3a454a;
+
+	--red:    #e67e80;
+	--orange: #e69875;
+	--yellow: #dbbc7f;
+	--green:  #a7c080;
+	--aqua:   #83c092;
+	--blue:   #7fbbb3;
+	--purple: #d699b6;
+
+	--font: IBM Plex Sans;
+}
+
+/* TODO: change canvas font */
+/* change UI font */
+html, body, .chakra-heading {
+	font-family: var(--font);
+}
+
+/* {{{ COLORS
+/* make buttons and text the right color */
+p.chakra-text.css-0,
+button.chakra-button,
+svg.chakra-icon.css-onkibi,
+/* menu buttons EXCEPT context menu */
+div:not(.css-19smzeu) > div.chakra-menu__menu-list > button,
+/* menu buttons in a nested group */
+div:not(.css-19smzeu) > div.chakra-menu__menu-list > div.chakra-menu__group > button {
+	color: var(--fg1);
+}
+
+/* make links a different color */
+a.chakra-text {
+	color: var(--purple);
+}
+
+/* make tooltips the right color */
+div.chakra-portal > div > div[role="tooltip"] {
+	color: var(--fg1);
+	background-color: var(--bg1);
+}
+
+/* make backlinks background lighter */
+div.backlinks {
+	background-color: var(--bg3);
+}
+
+/* fix confirmation modal header color */
+header.chakra-modal__header {
+	color: var(--red);
+}
+
+/* fix confirmation modal note name color */
+/* #chakra-modal--body-290 > div > p.chakra-text.css-722v25 */
+div.chakra-modal__body > div.chakra-stack > p:not(.css-0) {
+	color: var(--green);
+}
+
+/* fix confirmation modal button color */
+footer.chakra-modal__footer > button.chakra-button:first-child {
+	color: var(--bg1);
+}
+footer.chakra-modal__footer > button.chakra-button:first-child:hover {
+	background-color: var(--blue);
+}
+
+/* make unchecked toggle thumbs fg2 */
+span.chakra-switch__thumb:not([data-checked]) {
+	background-color: var(--fg2);
+}
+
+/* add a transition to toggle thumbs */
+span.chakra-switch__thumb {
+	transition-property: var(--chakra-transition-property-common);
+	transition-duration: var(--chakra-transition-duration-fast);
+}
+
+/* FIX: change slider track color */
+div.chakra-slider__filled-track {
+	background-color: var(--bg3) !important;
+}
+/* }}} */
+
+/* {{{ NODE CONTEXT MENU */
+/* remove the border from context menus */
+div.css-19smzeu > div.chakra-menu__menu-list {
+	border-width: 0px;
+}
+
+/* make context menu text heavier */
+div.css-19smzeu > div.chakra-menu__menu-list > button {
+	font-weight: 500;
+}
+
+/* hide context menu icons */
+div.css-19smzeu > div.chakra-menu__menu-list > button > span.chakra-menu__icon-wrapper {
+	display: none;
+}
+
+/* hide context menu divider */
+div.css-19smzeu > div.chakra-menu__menu-list > hr.chakra-menu__divider {
+	opacity: 0;
+	margin-top: 0.15rem;
+	margin-bottom: 0.15rem;
+}
+/* }}} */
+
+/* {{{ MISC */
+/* hide stack dividers */
+div.chakra-stack__divider {
+	opacity: 0;
+}
+
+/* {{{ make tags solid */
+div:has(+ div.org) > span {
+	color: var(--bg1);
+
+	/* move text down a bit */
+	padding-top: 0.087rem;
+}
+
+/* no way to inherit background-color from box-shadow's color so here we go */
+div:has(+ div.org) > span.css-eec28k {
+	background-color: var(--red);
+}
+div:has(+ div.org) > span.css-6jb5p1 {
+	background-color: var(--orange);
+}
+div:has(+ div.org) > span.css-pbdy73 {
+	background-color: var(--yellow);
+}
+div:has(+ div.org) > span.css-1xav4e4 {
+	background-color: var(--green);
+}
+div:has(+ div.org) > span.css-tqhrcz {
+	background-color: var(--aqua);
+}
+div:has(+ div.org) > span.css-1xnk72t {
+	background-color: var(--blue);
+}
+div:has(+ div.org) > span.css-15b5t8z {
+	background-color: var(--purple);
+}
+/* }}} */
+
+/* fix padding inconsistency in backlinks panel */
+div.backlinks {
+	padding-bottom: 6px;
+}
+/* }}} */

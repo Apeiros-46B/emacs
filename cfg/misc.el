@@ -26,9 +26,10 @@
 ; no blink
 (blink-cursor-mode 0)
 
-; only search current buffer for dabbrev
+; dabbrev
 (setq dabbrev-check-all-buffers nil)
 (setq dabbrev-check-other-buffers nil)
+(defkm '(normal insert) "M-;" 'dabbrev-expand)
 
 ; scrolling
 (setq scroll-conservatively most-positive-fixnum) ; one line at a time
