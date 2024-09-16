@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: (Syntax) Radio Target
+# key: rt
+# --
+<<<$1>>>$0

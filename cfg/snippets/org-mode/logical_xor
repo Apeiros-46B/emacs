@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: Logical XOR
+# key: lx
+# --
+\oplus 

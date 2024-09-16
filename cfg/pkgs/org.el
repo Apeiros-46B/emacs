@@ -340,7 +340,7 @@
     (org-modern-block-fringe 16)
 
     (org-modern-internal-target '(" 󰌹 " t " "))
-    (org-modern-radio           '(" 󰌹 " t " "))
+    (org-modern-radio-target    '(" 󰖩 " t " "))
 
     (org-modern-progress nil)
     ; }}}

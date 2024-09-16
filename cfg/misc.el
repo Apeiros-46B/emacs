@@ -12,19 +12,23 @@
   :init (ldr-defkm "Tws" 'visual-fill-column-mode))
 ; }}}
 
-; {{{ backup settings
+; {{{ file backups
 (setq
-  ; backup files in ~/emacs/config/path/backups
+  ; backup files in (emacs config path)/cache/backups
   backup-directory-alist `(("." . ,(get-cfg-path "cache/backups")))
   backup-by-copying t
   delete-old-versions t
-  kept-new-versions 6
+  kept-new-versions 5
   kept-old-versions 2
   version-control t)
 ; }}}
 
 ; no blink
 (blink-cursor-mode 0)
+
+; only search current buffer for dabbrev
+(setq dabbrev-check-all-buffers nil)
+(setq dabbrev-check-other-buffers nil)
 
 ; scrolling
 (setq scroll-conservatively most-positive-fixnum) ; one line at a time
