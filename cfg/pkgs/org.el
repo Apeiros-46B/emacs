@@ -90,7 +90,7 @@
     (org-insert-heading-respect-content t)
 
     (org-todo-keywords
-      '((sequence "TODO(t!)" "MAYBE(m!)" "WAIT(w!)" "|" "DONE(d!)")))
+      '((sequence "TASK(t!)" "STUDY(s!)" "WAIT(w!)" "|" "DONE(d!)")))
 
     (org-priority-highest 1)
     (org-priority-lowest  8)
@@ -180,7 +180,7 @@
          :empty-lines-before 2)
         ("a" "task/school" entry
          (file+headline ,(concat (car org-agenda-files) "/school.org") "tasks")
-         "* TODO [#3] %?\n   DEADLINE: "
+         "* TASK [#3] %?\n   DEADLINE: "
          :empty-lines 2)
         ("w" "website" entry (file ,my-org-tmp-file)
           "* [%<%Y-%m-%d %a %H:%M>] %?\n  - [[%:link][%:description]]\n  - \"%i\""
@@ -346,9 +346,9 @@
 
     ; {{{ custom todo and priority faces
     (org-modern-todo-faces
-          `(("TODO"      :foreground ,(getcol 'fg2) :background ,(getcol 'bg3))
-            ("MAYBE"     :foreground ,(getcol 'bg1) :background ,(getcol 'purple))
-            ("WAIT"      :foreground ,(getcol 'bg1) :background ,(getcol 'green))
+          `(("TASK"      :foreground ,(getcol 'fg2) :background ,(getcol 'bg3))
+            ("STUDY"     :foreground ,(getcol 'bg1) :background ,(getcol 'green))
+            ("WAIT"      :foreground ,(getcol 'bg1) :background ,(getcol 'purple))
             ("DONE"      :foreground ,(getcol 'fg2) :background ,(getcol 'bg3))))
 
     (org-modern-priority-faces
