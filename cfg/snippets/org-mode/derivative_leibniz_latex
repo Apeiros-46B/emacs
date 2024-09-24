@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: Derivative (Leibniz, Latex)
+# key: d
+# --
+\dfrac{d${1:f}}{d${2:x}} $0

@@ -91,6 +91,7 @@
 
     (org-todo-keywords
       '((sequence "TASK(t!)" "STUDY(s!)" "WAIT(w!)" "|" "DONE(d!)")))
+    (org-todo-repeat-to-state t) ; use prev state when repeating task
 
     (org-priority-highest 1)
     (org-priority-lowest  8)
