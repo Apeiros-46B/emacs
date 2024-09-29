@@ -7,7 +7,6 @@
     my-org-capture-tmp
     my-org-capture-agenda
     my-org-goto-capture-file
-    my-org-goto-journal-file
     my-org-goto-agenda-dir
 
   :hook
@@ -79,7 +78,6 @@
     (org-log-into-drawer t)
     (org-log-done 'time)
 
-    (org-adapt-indentation t)
     (org-return-follows-link nil)
     (org-cycle-separator-lines 2)
 
@@ -113,6 +111,9 @@
     ; }}}
 
     ; {{{ visuals
+    (org-startup-indented t)
+    (org-indent-indentation-per-level 1)
+
     (org-hide-emphasis-markers t)
     (org-link-descriptive t)
     (org-pretty-entities t)
@@ -329,7 +330,7 @@
     (org-modern-list
           '((?- . "•")
             (?+ . "▪")
-            (?* . "▸")))
+            (?* . "–")))
 
     (org-modern-checkbox
           '((?X  . "[󰄬]")
@@ -392,7 +393,11 @@
 ; {{{ org-fragtog + org-appear
 (use-package org-fragtog
   :commands org-fragtog-mode
-  :hook (org-mode . org-fragtog-mode))
+  :hook (org-mode . org-fragtog-mode)
+
+  :custom
+    ; don't show fragments inside tables
+    (org-fragtog-ignore-predicates '(org-at-table-p)))
 
 (use-package org-appear
   :commands org-appear-mode

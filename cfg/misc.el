@@ -13,6 +13,10 @@
 ; no blink
 (blink-cursor-mode 0)
 
+; wrapping
+(setq-default fill-column 88)
+(global-visual-line-mode t)
+
 ; dabbrev
 (setq dabbrev-check-all-buffers nil)
 (setq dabbrev-check-other-buffers nil)
