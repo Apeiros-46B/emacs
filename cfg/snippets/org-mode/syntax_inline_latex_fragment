@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: (Syntax) Inline LaTeX fragment
+# key: m
+# --
+\\( $1 \\) $0

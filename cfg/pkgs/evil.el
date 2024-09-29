@@ -8,6 +8,7 @@
   :init
     (setq evil-want-integration t)
     (setq evil-want-keybinding nil)
+    (setq evil-respect-visual-line-mode t)
 
   :config
     ; undo system

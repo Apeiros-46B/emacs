@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: (Syntax) LaTeX fragment
+# key: dm
+# --
+\\[ $1 \\] $0

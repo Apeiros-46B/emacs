@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: Real numbers
+# key: sR
+# --
+\mathbb{R}
