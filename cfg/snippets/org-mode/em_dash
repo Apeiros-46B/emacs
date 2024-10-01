@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: Em dash
+# key: @_
+# condition: 'auto
+# --
+\mdash 

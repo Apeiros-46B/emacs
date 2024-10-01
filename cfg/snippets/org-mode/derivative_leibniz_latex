@@ -2,4 +2,4 @@
 # name: Derivative (Leibniz, Latex)
 # key: d
 # --
-\dfrac{d${1:f}}{d${2:x}} $0
+\dfrac{d$1}{d${2:x}} $0

@@ -88,7 +88,7 @@
     (org-insert-heading-respect-content t)
 
     (org-todo-keywords
-      '((sequence "TASK(t!)" "STUDY(s!)" "WAIT(w!)" "|" "DONE(d!)")))
+      '((sequence "TASK(t!)" "STUDY(s!)" "WORK(w!)" "|" "DONE(d!)")))
     (org-todo-repeat-to-state t) ; use prev state when repeating task
 
     (org-priority-highest 1)
@@ -350,7 +350,7 @@
     (org-modern-todo-faces
           `(("TASK"      :foreground ,(getcol 'fg2) :background ,(getcol 'bg3))
             ("STUDY"     :foreground ,(getcol 'bg1) :background ,(getcol 'green))
-            ("WAIT"      :foreground ,(getcol 'bg1) :background ,(getcol 'purple))
+            ("WORK"      :foreground ,(getcol 'bg1) :background ,(getcol 'purple))
             ("DONE"      :foreground ,(getcol 'fg2) :background ,(getcol 'bg3))))
 
     (org-modern-priority-faces

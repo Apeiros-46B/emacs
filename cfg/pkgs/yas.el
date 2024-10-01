@@ -7,7 +7,7 @@
 
     ; expand snippets marked with condition: 'auto
     (post-command . (lambda ()
-      (when yas-minor-mode
+      (when (and (boundp 'yas-minor-mode) yas-minor-mode)
         (let ((yas-buffer-local-condition ''(require-snippet-condition . auto)))
           (yas-expand)))))
 
