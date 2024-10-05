@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: Scientific notation
+# key: e+
+# --
+$1 \times 10^{$2}
