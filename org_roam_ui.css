@@ -1,5 +1,3 @@
-/* css theme for org-roam-ui */
-
 /* USER SETTINGS */
 :root {
 	--fg1: #d3c6aa;
@@ -7,8 +5,9 @@
 	--bg1: #2b3339;
 	--bg2: #323c41;
 	--bg3: #3a454a;
+	--bg4: #445055;
 
-	--red:    #e67e80;
+	--red:	#e67e80;
 	--orange: #e69875;
 	--yellow: #dbbc7f;
 	--green:  #a7c080;
@@ -16,19 +15,25 @@
 	--blue:   #7fbbb3;
 	--purple: #d699b6;
 
+	--accent: var(--green); /* set this to the same as the accent in the ORUI config */
+	--link-color: var(--purple);
 	--font: IBM Plex Sans;
 }
 
+/* {{{ GENERAL */
+
+/* set UI font */
 /* TODO: change canvas font */
-/* change UI font */
 html, body, .chakra-heading {
 	font-family: var(--font);
 }
 
-/* {{{ COLORS
 /* make buttons and text the right color */
 p.chakra-text.css-0,
+input.chakra-input,
 button.chakra-button,
+select.chakra-select,
+div.chakra-select__icon-wrapper,
 svg.chakra-icon.css-onkibi,
 /* menu buttons EXCEPT context menu */
 div:not(.css-19smzeu) > div.chakra-menu__menu-list > button,
@@ -37,89 +42,68 @@ div:not(.css-19smzeu) > div.chakra-menu__menu-list > div.chakra-menu__group > bu
 	color: var(--fg1);
 }
 
-/* make links a different color */
-a.chakra-text {
-	color: var(--purple);
-}
-
-/* make tooltips the right color */
+/* fix tooltip color */
 div.chakra-portal > div > div[role="tooltip"] {
 	color: var(--fg1);
-	background-color: var(--bg1);
-}
-
-/* make backlinks background lighter */
-div.backlinks {
 	background-color: var(--bg3);
 }
 
-/* fix confirmation modal header color */
-header.chakra-modal__header {
-	color: var(--red);
-}
-
-/* fix confirmation modal note name color */
-/* #chakra-modal--body-290 > div > p.chakra-text.css-722v25 */
-div.chakra-modal__body > div.chakra-stack > p:not(.css-0) {
-	color: var(--green);
-}
-
-/* fix confirmation modal button color */
-footer.chakra-modal__footer > button.chakra-button:first-child {
-	color: var(--bg1);
-}
-footer.chakra-modal__footer > button.chakra-button:first-child:hover {
-	background-color: var(--blue);
-}
-
-/* make unchecked toggle thumbs fg2 */
-span.chakra-switch__thumb:not([data-checked]) {
-	background-color: var(--fg2);
-}
-
-/* add a transition to toggle thumbs */
-span.chakra-switch__thumb {
-	transition-property: var(--chakra-transition-property-common);
-	transition-duration: var(--chakra-transition-duration-fast);
-}
-
-/* FIX: change slider track color */
-div.chakra-slider__filled-track {
-	background-color: var(--bg3) !important;
-}
 /* }}} */
 
-/* {{{ NODE CONTEXT MENU */
-/* remove the border from context menus */
-div.css-19smzeu > div.chakra-menu__menu-list {
-	border-width: 0px;
+/* {{{ PREVIEW PANE */
+
+/* make links a different color */
+a.chakra-text {
+	color: var(--link-color);
 }
 
-/* make context menu text heavier */
-div.css-19smzeu > div.chakra-menu__menu-list > button {
-	font-weight: 500;
+/* make font lighter and larger */
+div.org p {
+	font-weight: 450 !important;
+	font-size: 15px;
+}
+div.org h1 {
+    font-size: 18px;
 }
 
-/* hide context menu icons */
-div.css-19smzeu > div.chakra-menu__menu-list > button > span.chakra-menu__icon-wrapper {
-	display: none;
+/* make lists denser */
+div.org ol > li,
+div.org ul > li {
+	padding-top: 0px;
+}
+div.org ol > li > p,
+div.org ul > li > p {
+	padding-bottom: 3px;
 }
 
-/* hide context menu divider */
-div.css-19smzeu > div.chakra-menu__menu-list > hr.chakra-menu__divider {
-	opacity: 0;
-	margin-top: 0.15rem;
-	margin-bottom: 0.15rem;
-}
-/* }}} */
-
-/* {{{ MISC */
-/* hide stack dividers */
-div.chakra-stack__divider {
-	opacity: 0;
+/* make backlinks background lighter and fix padding inconsistency */
+div.backlinks {
+	background-color: var(--bg3);
+	padding-bottom: 6px;
 }
 
-/* {{{ make tags solid */
+/* make backlinks list denser */
+div.backlinks > p {
+	margin-bottom: 0px !important;
+}
+div.backlinks > div.chakra-stack {
+	padding-top: 0px;
+}
+div.backlinks div.chakra-stack__divider {
+	margin: 0px;
+}
+
+/* fix border color in outline mode */
+div.css-t7ycaj div.sectionContent {
+	border-left-width: 2px;
+	border-left-color: var(--bg4);
+}
+
+/* fix bottom padding in outline mode (fixes alignment of left tick mark) */
+div.css-t7ycaj div.sec {
+	padding-bottom: var(--chakra-space-3);
+}
+
 div:has(+ div.org) > span {
 	color: var(--bg1);
 
@@ -149,10 +133,145 @@ div:has(+ div.org) > span.css-1xnk72t {
 div:has(+ div.org) > span.css-15b5t8z {
 	background-color: var(--purple);
 }
+
+/* remove popover arrow */
+div.chakra-popover__arrow-positioner {
+	display: none;
+}
+
+/* fix popover color and padding */
+div.chakra-popover__body {
+	border-width: 0px;
+	background-color: var(--bg3);
+	padding: var(--chakra-space-4);
+}
+div.chakra-popover__body > div > div > div,
+div.chakra-popover__body > div > div > div > div,
+div.chakra-popover__body > div > div > div > div > p {
+	padding: 0px;
+}
+
+/* add shadow */
+div.chakra-popover__popper {
+	box-shadow: var(--chakra-shadows-1g);
+}
+
 /* }}} */
 
-/* fix padding inconsistency in backlinks panel */
-div.backlinks {
-	padding-bottom: 6px;
+/* {{{ SETTINGS UI */
+
+/* hide annoying dividers */
+div.chakra-stack__divider {
+	opacity: 0;
+}
+
+/* make accordion buttons not have a border on focus */
+button.chakra-accordion__button:focus {
+	box-shadow: none;
+}
+
+/* make scrollbar grey instead of accented */
+div.css-1b4ctmu {
+	background-color: var(--bg4);
+}
+
+/* fix text input and combobox text color, remove border, and fix padding */
+input.chakra-input,
+select.chakra-select {
+	padding-inline-start: var(--chakra-space-3);
+	padding-inline-end: var(--chakra-space-3);
+	border-width: 0px;
+	background-color: var(--bg3);
+}
+input.chakra-input:focus,
+select.chakra-select:focus {
+	border-width: 0px;
+	box-shadow: none;
+}
+
+/* make unchecked toggle thumbs fg2 */
+span.chakra-switch__thumb:not([data-checked]) {
+	background-color: var(--fg2);
+}
+
+/* add a transition to toggle thumbs */
+span.chakra-switch__thumb {
+	transition-property: var(--chakra-transition-property-common);
+	transition-duration: var(--chakra-transition-duration-fast);
+}
+
+/* change slider track color */
+div.chakra-slider__track, div.chakra-slider__filled_track {
+	border-color: var(--bg4);
+	background-color: var(--bg4);
+}
+
+/* }}} */
+
+/* {{{ MODAL */
+
+/* fix confirmation modal header color */
+header.chakra-modal__header {
+	color: var(--red);
+}
+
+/* fix confirmation modal note name color */
+/* #chakra-modal--body-290 > div > p.chakra-text.css-722v25 */
+div.chakra-modal__body > div.chakra-stack > p:not(.css-0) {
+	color: var(--accent);
+}
+
+/* fix confirmation modal button color */
+footer.chakra-modal__footer > button.chakra-button:first-child {
+	color: var(--bg1);
+}
+footer.chakra-modal__footer > button.chakra-button:first-child:hover {
+	background-color: var(--blue);
+}
+
+/* }}} */
+
+/* {{{ CONTEXT/AUTOCOMPLETE MENU */
+/* remove border and set correct color for menu lists */
+div.chakra-menu__menu-list {
+	border-width: 0px;
+	background-color: var(--bg3);
+}
+
+/* context/autocomplete menu button */
+ul.css-f0vxif,
+ul.css-f0vxif > li,
+div.chakra-menu__menu-list > button {
+	font-weight: 500; /* heavier text */
+	border-radius: 4px; /* slight rounding */
+	color: var(--fg2);
+	background-color: var(--bg3);
+}
+ul.css-f0vxif > li[aria-selected="true"],
+div.chakra-menu__menu-list > button:hover {
+	color: var(--bg1) !important;
+	background-color: var(--accent);
+}
+
+/* checkmark icon */
+ul.css-f0vxif > li[aria-selected="true"] svg {
+	color: var(--bg1);
+}
+
+/* "Permanently delete note" button */
+div.chakra-menu__menu-list > button.css-9wp7vg:hover {
+	background-color: var(--red);
+}
+
+/* hide context menu icons */
+div.chakra-menu__menu-list > button > span.chakra-menu__icon-wrapper {
+	display: none;
+}
+
+/* hide context menu divider */
+div.chakra-menu__menu-list > hr.chakra-menu__divider {
+	opacity: 0;
+	margin-top: 0.15rem;
+	margin-bottom: 0.15rem;
 }
 /* }}} */

@@ -10,6 +10,9 @@
   kept-old-versions 2
   version-control t)
 
+; save more file history
+(setq recentf-max-saved-items nil)
+
 ; no blink
 (blink-cursor-mode 0)
 

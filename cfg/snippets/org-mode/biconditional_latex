@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: Biconditional (LaTeX version)
+# key: liff
+# --
+\leftrightarrow 

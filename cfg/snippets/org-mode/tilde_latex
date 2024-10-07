@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: Tilde (LaTeX)
+# key: ~
+# --
+\sim 

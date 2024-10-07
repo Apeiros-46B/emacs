@@ -130,8 +130,12 @@
     ; org-protocol
     (require 'org-protocol)
 
-    ; option depends on default value
+    ; {{{ custom options (depends on default value)
     (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.6))
+
+    ; open links in current pane
+    (setf (alist-get 'file org-link-frame-setup) 'find-file)
+    ; }}}
 
     ; {{{ custom faces
     (set-face-attribute 'org-block            nil :background (getcol 'bg1))

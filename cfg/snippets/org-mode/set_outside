@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: Set (outside LaTeX)
+# key: m{
+# --
+\\( \\{ ${1:x} \in ${2:D} | ${3:P(x)} \\} \\)
