@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: Empty set
+# key: so
+# --
+\emptyset 
