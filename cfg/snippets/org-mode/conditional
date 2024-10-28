@@ -2,4 +2,4 @@
 # name: Conditional
 # key: if
 # --
--> 
+`(if (org-inside-LaTeX-fragment-p) "\\rightarrow" "->")` 

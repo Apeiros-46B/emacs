@@ -2,4 +2,4 @@
 # name: For all
 # key: A
 # --
-\forall 
+\forall`(if (org-inside-LaTeX-fragment-p) " " "{}")`

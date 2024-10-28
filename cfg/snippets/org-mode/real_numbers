@@ -1,5 +1,5 @@
 # -*- mode: snippet -*-
 # name: Real numbers
-# key: sR
+# key: R
 # --
-\mathbb{R}
+`(if (org-inside-LaTeX-fragment-p) "\\mathbb{R}" "R")`

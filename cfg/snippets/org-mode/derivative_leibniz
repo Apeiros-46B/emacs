@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: Derivative (Leibniz)
+# key: d
+# expand-env: ((latex (org-inside-LaTeX-fragment-p)))
+# --
+`(when latex "\frac{")`d$1`(if latex "}{" "/")`d${2:x}`(when latex "}")` $0

@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: Not Equal
+# key: !=
+# condition: (org-inside-LaTeX-fragment-p)
+# --
+\neq 

@@ -2,4 +2,4 @@
 # name: Biconditional
 # key: iff
 # --
-<-> 
+`(if (org-inside-LaTeX-fragment-p) "\\liff" "<->")` 

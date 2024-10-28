@@ -1,5 +1,6 @@
 # -*- mode: snippet -*-
 # name: Limit
 # key: l
+# expand-env: ((latex (org-inside-LaTeX-fragment-p)))
 # --
-lim_{${1:x}->$2} $1$0
+`(if latex "\\lim\\limits" "lim")`_{${1:x}`(if latex " \\to " "->")`$2} $1$0

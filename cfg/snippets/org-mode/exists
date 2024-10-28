@@ -2,4 +2,4 @@
 # name: Exists
 # key: E
 # --
-\exists 
+\exists`(if (org-inside-LaTeX-fragment-p) " " "{}")`

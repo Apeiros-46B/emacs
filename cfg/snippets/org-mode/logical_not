@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: Logical Not
+# key: ~
+# condition: (org-inside-LaTeX-fragment-p)
+# --
+\sim 
