@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: (LaTeX) Large absolute value
+# key: abs
+# --
+`(if (org-inside-LaTeX-fragment-p) "\\left|" "|")`$0`(if (org-inside-LaTeX-fragment-p) "\\right|" "|")`

@@ -52,24 +52,24 @@
 
 ; {{{ helper functions
 (setq customcolors
-  '(bg1    "#2b3339"
-    bg2    "#323c41"
-    bg3    "#3a454a"
-    bg4    "#445055"
-    fg1    "#d3c6aa"
-    fg2    "#859289"
+  '(bg1    "#ffffff"
+    bg2    "#f4f4f4"
+    bg3    "#ebebeb"
+    bg4    "#e4e4e4"
+    fg1    "#333333"
+    fg2    "#777777"
 
-    red    "#e67e80"
-    orange "#e69875"
-    yellow "#dbbc7f"
-    green  "#a7c080"
-    aqua   "#83c092"
-    blue   "#7fbbb3"
-    purple "#d699b6"
+    red    "#904961"
+    orange "#934c3d"
+    yellow "#b5803e"
+    green  "#427138"
+    aqua   "#117555"
+    blue   "#535d9c"
+    purple "#79508a"
 
-    visual   "#503946"
-    bg-red   "#4e3e43"
-    bg-green "#404d44"))
+    visual   "#e4dce8"
+    bg-red   "#e9dbdf"
+    bg-green "#d9e3d7"))
 
 ; get a color
 (defun getcol (name) (plist-get customcolors name))

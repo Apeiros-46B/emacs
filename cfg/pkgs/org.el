@@ -6,10 +6,14 @@
   :commands
     my-org-capture-tmp
     my-org-capture-agenda
-    my-org-goto-capture-file
+    my-org-goto-tmp-file
     my-org-goto-agenda-dir
 
   :hook
+    ; use slab font in org files
+    (org-mode . (lambda ()
+      (face-remap-add-relative 'default :family (face-attribute 'nano-serif :family))))
+
     ; skip subtree when folding/cycling
     (org-cycle . (lambda (state)
       (when (eq state 'children)
@@ -74,6 +78,7 @@
 
     ; don't clutter my fs with latex image cache
     (org-preview-latex-image-directory (get-cfg-path "cache/ltximg/"))
+    (org-preview-latex-default-process 'dvisvgm)
 
     (org-log-into-drawer t)
     (org-log-done 'time)
@@ -131,13 +136,18 @@
     (require 'org-protocol)
 
     ; {{{ custom options (depends on default value)
-    (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.6))
+    (setq org-format-latex-options (plist-put org-format-latex-options :scale 0.25))
 
     ; open links in current pane
     (setf (alist-get 'file org-link-frame-setup) 'find-file)
     ; }}}
 
     ; {{{ custom faces
+    ; use mono font for code segments
+    (set-face-attribute 'org-block    nil :family (face-attribute 'nano-mono :family))
+    (set-face-attribute 'org-code     nil :family (face-attribute 'nano-mono :family))
+    (set-face-attribute 'org-verbatim nil :family (face-attribute 'nano-mono :family))
+
     (set-face-attribute 'org-block            nil :background (getcol 'bg1))
     (set-face-attribute 'org-block-begin-line nil :underline nil)
     (set-face-attribute 'org-block-end-line   nil :overline nil)
@@ -195,7 +205,7 @@
     (defun my-org-capture-tmp () (interactive) (org-capture nil "t"))
     (defun my-org-capture-agenda () (interactive) (org-capture nil "a"))
 
-    (defun my-org-goto-capture-file () (interactive) (find-file my-org-tmp-file))
+    (defun my-org-goto-tmp-file () (interactive) (find-file my-org-tmp-file))
     (defun my-org-goto-agenda-dir ()
       (interactive)
       (dired org-agenda-files)))
@@ -332,16 +342,16 @@
     (org-modern-table-vertical 1)
 
     (org-modern-list
-          '((?- . "•")
-            (?+ . "▪")
-            (?* . "–")))
+          '((?- . "·")
+            (?+ . "∘")
+            (?* . "▸")))
 
     (org-modern-checkbox
           '((?X  . "[󰄬]")
             (?-  . "[-]")
             (?\s . "[ ]")))
 
-    (org-modern-block-name '("$" . "$"))
+    (org-modern-block-name '(">" . ">"))
     (org-modern-block-fringe 16)
 
     (org-modern-internal-target '(" 󰌹 " t " "))

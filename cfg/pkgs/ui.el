@@ -8,53 +8,49 @@
 ; {{{ define custom colors
 (setq frame-background-mode 'dark)
 
-(setq nano-dark-foreground (getcol 'fg1)
-      nano-dark-background (getcol 'bg1)
-      nano-dark-highlight  (getcol 'bg3)
-      nano-dark-critical   (getcol 'red)
-      nano-dark-salient    (getcol 'green)
-      nano-dark-strong     (getcol 'fg1)
-      nano-dark-popout     (getcol 'blue)
-      nano-dark-subtle     (getcol 'bg2)
-      nano-dark-faded      (getcol 'fg2))
+(setq nano-light-foreground (getcol 'fg1)
+      nano-light-background (getcol 'bg1)
+      nano-light-highlight  (getcol 'bg3)
+      nano-light-critical   (getcol 'red)
+      nano-light-salient    (getcol 'green)
+      nano-light-strong     (getcol 'fg1)
+      nano-light-popout     (getcol 'blue)
+      nano-light-subtle     (getcol 'bg2)
+      nano-light-faded      (getcol 'fg2))
 ; }}}
 
 ; {{{ font settings
 (setq nano-fonts-use t)
 (custom-set-faces
-  '(nano-mono     ((t (:family "JetBrainsMono Nerd Font Mono" :height 130 :weight normal))))
+  '(nano-mono     ((t (:family "Iosevka Custom" :height 140 :weight normal))))
   '(nano-mono-alt ((t (:inherit nano-mono))))
   '(nano-sans     ((t (:inherit nano-mono))))
-  '(nano-serif    ((t (:inherit nano-mono))))
+  '(nano-serif    ((t (:family "Iosevka Custom Manuscript" :height 140 :weight normal))))
   '(nano-italic   ((t (:inherit nano-mono)))))
+
+(set-fontset-font "fontset-default"
+                  'emoji '("Twitter Color Emoji" . "iso10646-1") nil 'prepend)
+(set-fontset-font "fontset-default"
+                  '(#xe000 . #xf8ff) "Iosevka Nerd Font Mono")
 ; }}}
 
-(nano-dark)
+(nano-light)
 
-; {{{ layout
-; frame settings
-; TODO: really hacky, find a way to get default-frame-alist to respect DPI
-(defun my-scale (px) (* px (/ (x-display-pixel-height) 1080)))
-(defun my-apply-frame-settings ()
-  (setq default-frame-alist
-    (append (list
-      `(background-color . ,(getcol 'bg1))
-      '(min-height . 1)
-      `(height     . ,(my-scale 40))
-      '(min-width  . 1)
-      `(width      . ,(my-scale 80))
-      '(vertical-scroll-bars . nil)
-      `(internal-border-width . ,(my-scale 20))
-      '(left-fringe    . 0)
-      '(right-fringe   . 0)
-      '(tool-bar-lines . 0)
-      '(menu-bar-lines . 0)))))
+(setq default-frame-alist
+  (append (list
+    `(background-color . ,(getcol 'bg1))
+    '(min-height . 1)
+    '(height     . 40)
+    '(min-width  . 1)
+    '(width      . 80)
+    '(vertical-scroll-bars . nil)
+    '(internal-border-width . 20)
+    '(left-fringe    . 0)
+    '(right-fringe   . 0)
+    '(tool-bar-lines . 0)
+    '(menu-bar-lines . 0))))
 
 (setq frame-resize-pixelwise t)
-(if (daemonp)
-  ; TODO: this doesn't apply to the first frame but the rest work
-  (add-hook 'server-after-make-frame-hook 'my-apply-frame-settings)
-  (my-apply-frame-settings))
 
 ; no ugly checkbox button
 (setq widget-image-enable nil)

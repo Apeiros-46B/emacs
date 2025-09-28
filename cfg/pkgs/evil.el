@@ -38,6 +38,9 @@
     ; activate
     (evil-mode 1)
 
+  :custom
+    (evil-move-cursor-back t)
+
     ; {{{ custom bindings
     (defkm 'insert "C-S-v" "C-r \""))
     ; }}}
