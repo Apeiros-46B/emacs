@@ -6,7 +6,17 @@
   :commands nano-dark nano-light)
 
 ; {{{ define custom colors
-(setq frame-background-mode 'dark)
+(setq frame-background-mode (if my-lightmode 'light 'dark))
+
+(setq nano-dark-foreground (getcol 'fg1)
+      nano-dark-background (getcol 'bg1)
+      nano-dark-highlight  (getcol 'bg3)
+      nano-dark-critical   (getcol 'red)
+      nano-dark-salient    (getcol 'green)
+      nano-dark-strong     (getcol 'fg1)
+      nano-dark-popout     (getcol 'blue)
+      nano-dark-subtle     (getcol 'bg2)
+      nano-dark-faded      (getcol 'fg2))
 
 (setq nano-light-foreground (getcol 'fg1)
       nano-light-background (getcol 'bg1)
@@ -34,7 +44,7 @@
                   '(#xe000 . #xf8ff) "Iosevka Nerd Font Mono")
 ; }}}
 
-(nano-light)
+(if my-lightmode (nano-light) (nano-dark))
 
 (setq default-frame-alist
   (append (list

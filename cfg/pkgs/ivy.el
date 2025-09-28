@@ -5,8 +5,9 @@
     ; {{{ custom keybindings
     (ldr-defkm "fb" 'counsel-switch-buffer)
     (ldr-defkm "fc" 'counsel-unicode-char)
-    (ldr-defkm "ff" 'counsel-fzf)
-    (ldr-defkm "HF" 'counsel-faces)
+    (ldr-defkm "ff" 'counsel-find-file)
+    (ldr-defkm "fF" 'counsel-fzf)
+    (ldr-defkm "fh" 'counsel-faces)
     (ldr-defkm "fr" 'counsel-recentf)
     (ldr-defkm "fw" 'counsel-rg))
     (ldr-defkm "f'" 'counsel-evil-marks)
