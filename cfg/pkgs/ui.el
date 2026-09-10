@@ -48,23 +48,23 @@
 
 (setq default-frame-alist
   (append (list
-    `(background-color . ,(getcol 'bg1))
-    '(min-height . 1)
-    '(height     . 40)
-    '(min-width  . 1)
-    '(width      . 80)
-    '(vertical-scroll-bars . nil)
+    `(background-color      . ,(getcol 'bg1))
+    '(min-height            . 1)
+    '(height                . 40)
+    '(min-width             . 1)
+    '(width                 . 80)
+    '(undecorated           . t)
+    '(vertical-scroll-bars  . nil)
     '(internal-border-width . 20)
-    '(left-fringe    . 0)
-    '(right-fringe   . 0)
-    '(tool-bar-lines . 0)
-    '(menu-bar-lines . 0))))
+    '(left-fringe           . 0)
+    '(right-fringe          . 0)
+    '(tool-bar-lines        . 0)
+    '(menu-bar-lines        . 0))))
 
 (setq frame-resize-pixelwise t)
 
 ; no ugly checkbox button
 (setq widget-image-enable nil)
-; }}}
 
 ; {{{ options
 ; no stuff on startup
@@ -112,12 +112,10 @@
 (setq window-min-height 1)
 ; }}}
 
-; {{{ re-enable some font features
-; bolds & italics
+; re-enable bold and italic after nano init
 (set-face-attribute 'default nil :foreground (getcol 'fg1) :weight 'regular)
 (set-face-attribute 'bold    nil :foreground (getcol 'fg1) :weight 'bold)
 (set-face-attribute 'italic  nil :foreground (getcol 'fg1) :weight 'regular :slant 'italic)
-; }}}
 ;; }}}
 
 ;; {{{ MODELINE
@@ -136,9 +134,6 @@
     ; {{{ custom options
     (nano-modeline-position 'nano-modeline-header)
     (nano-modeline-padding '(0 . 0))
-    ; (nano-modeline-prefix 'status)
-    ; (nano-modeline-prefix-padding t)
-    ; (nano-modeline-display-tab-number t)
 
     ; set faces correctly
     (nano-modeline-faces
@@ -184,60 +179,59 @@
     (defface my-nano-modeline-inactive-status-** `((t . (:background ,(getcol 'bg-red) :foreground ,(getcol 'red) :weight bold))) "")
     ; }}}
 
-    ; {{{ override nano-modeline functions
-    ; {{{ default mode
-    ; (defun nano-modeline-default-mode (&optional icon)
-    ;   (defvar org-pomodoro-mode-line)
-    ;   (let ((icon (or icon (plist-get (cdr (assoc 'text-mode nano-modeline-mode-formats)) :icon)))
-    ;       ; {{{ buffer name (taking into account narrowed bufs)
-    ;       (buffer-name (cond
-    ;                     ((and (derived-mode-p 'org-mode)
-    ;                           (buffer-narrowed-p)
-    ;                           (buffer-base-buffer))
-    ;                      (format"%s [%s]" (buffer-base-buffer)
-    ;                             (org-link-display-format
-    ;                             (substring-no-properties (or (org-get-heading 'no-tags)
-    ;                                                      "-")))))
-    ;                     ((and (buffer-narrowed-p)
-    ;                           (buffer-base-buffer))
-    ;                      (format"%s [narrow]" (buffer-base-buffer)))
-    ;                     (t
-    ;                      (format-mode-line "%b"))))
-    ;       ; }}}
+    ; {{{ override nano-modeline formatting
+    (defun my-nano-modeline-buffer-type (&optional name)
+      (nano-modeline-primary-info (format "(%s)" (or name mode-name))))
 
-    ;       ; {{{ others
-    ;       (mode-name (nano-modeline-mode-name))
-    ;       (branch    (nano-modeline-vc-branch))
-    ;       (position  (format-mode-line "%l:%c"))
-    ;       (pomodoro  (and (boundp 'org-pomodoro-mode-line) org-pomodoro-mode-line)))
-    ;       ; }}}
+    (defun my-nano-modeline-org-capture-buffer-name ()
+      (nano-modeline-buffer-name
+        (buffer-name (org-base-buffer (current-buffer)))))
 
-    ;     ; {{{ render modeline
-    ;     (nano-modeline-render
-    ;       icon
-    ;       buffer-name
-    ;       (concat "(" mode-name (if branch (concat ", " branch) "") ")"
-    ;         ; pomodoro ; TODO
-    ;         )
-    ;       position
-    ;       )))
-    ;     ; }}}
+    (defun nano-modeline-default-mode (&optional default)
+      (funcall nano-modeline-position
+        '((nano-modeline-buffer-status) " "
+          (nano-modeline-buffer-name) " "
+          (my-nano-modeline-buffer-type) " "
+          (nano-modeline-git-info))
+        '((nano-modeline-cursor-position)
+          (nano-modeline-window-dedicated))
+        default))
+
+    (defun nano-modeline-prog-mode (&optional default)
+      (nano-modeline-default-mode default))
+
+    (defun nano-modeline-text-mode (&optional default)
+      (nano-modeline-default-mode default))
+
+    (defun nano-modeline-org-mode ()
+      (funcall nano-modeline-position
+        '((nano-modeline-buffer-status) " "
+          (nano-modeline-org-buffer-name) " "
+          (my-nano-modeline-buffer-type "Org") " "
+          (nano-modeline-git-info))
+        '((nano-modeline-cursor-position)
+          (nano-modeline-window-dedicated))))
+
+    (defun nano-modeline-org-capture-mode ()
+      (funcall nano-modeline-position
+        '((nano-modeline-buffer-status) " "
+          (my-nano-modeline-org-capture-buffer-name) " "
+          (my-nano-modeline-buffer-type "Org"))
+        '((nano-modeline-cursor-position)
+          (nano-modeline-window-dedicated))))
+
+    (defun nano-modeline-org-agenda-mode ()
+      (add-hook 'post-command-hook #'force-mode-line-update)
+      (funcall nano-modeline-position
+        '((nano-modeline-buffer-status) " "
+          (nano-modeline-buffer-name "Agenda"))
+        '((nano-modeline-org-agenda-date) " "
+          (nano-modeline-window-dedicated))))
     ; }}}
 
-    ; {{{ agenda mode
-    ; (defun nano-modeline-org-agenda-mode ()
-    ;   (nano-modeline-render (plist-get (cdr (assoc 'org-agenda-mode nano-modeline-mode-formats)) :icon)
-    ;     "org-agenda"
-    ;     (concat "(" (format-time-string "%Y.%m.%d:%u") ")")
-    ;     (if (nano-modeline-org-clock-mode-p) (concat org-mode-line-string "*") "")))
-    ; }}}
-    ; }}}
-
-    ; {{{ override default modeline faces
+    ; override default modeline faces
     (set-face-attribute 'mode-line          nil :background (getcol 'bg3) :foreground (getcol 'fg2) :box nil)
     (set-face-attribute 'mode-line-inactive nil :background (getcol 'bg2) :foreground (getcol 'fg2) :box nil)
-    ; }}}
 
-    ; activate
     (nano-modeline-text-mode t))
 ;; }}}

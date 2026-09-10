@@ -10,6 +10,13 @@
     my-org-goto-agenda-dir
 
   :hook
+    ; TODO: i'm not sure why this is needed
+    (org-mode . org-modern-mode)
+    (org-mode . org-fragtog-mode)
+    (org-mode . org-appear-mode)
+    (org-mode . evil-org-mode)
+    (org-mode . yas-minor-mode)
+
     ; use slab font in org files
     (org-mode . (lambda ()
       (face-remap-add-relative 'default :family (face-attribute 'nano-serif :family))))
@@ -132,6 +139,9 @@
     ; }}}
 
   :config
+    (mkdir org-directory :parents)
+    (mkdir (car org-agenda-files) :parents)
+
     ; org-protocol
     (require 'org-protocol)
 
@@ -357,7 +367,7 @@
     (org-modern-internal-target '(" 󰌹 " t " "))
     (org-modern-radio-target    '(" 󰖩 " t " "))
 
-    (org-modern-progress nil)
+    (org-modern-progress 9)
     ; }}}
 
     ; {{{ custom todo and priority faces
@@ -392,8 +402,6 @@
     (set-face-attribute 'org-modern-todo nil :foreground (getcol 'bg2) :background (getcol 'green) :inverse-video nil)
 
     (set-face-attribute 'org-modern-priority nil :foreground (getcol 'bg1) :background (getcol 'fg2) :inverse-video nil)
-
-    (set-face-attribute 'org-modern-statistics nil :foreground (getcol 'green) :background (getcol 'bg3))
 
     (set-face-attribute 'org-modern-date-active   nil :foreground (getcol 'fg2) :background (getcol 'bg3))
     (set-face-attribute 'org-modern-time-active   nil :foreground (getcol 'fg2) :background (getcol 'bg4))
