@@ -8,9 +8,30 @@
   :init
     (setq evil-want-integration t)
     (setq evil-want-keybinding nil)
-    (setq evil-respect-visual-line-mode t)
 
   :config
+    (evil-define-motion my-evil-visual-next-line (count)
+      :type exclusive
+      (if (eq evil-visual-selection 'char)
+          (evil-next-visual-line count)
+        (evil-next-line count)))
+    (evil-define-motion my-evil-visual-previous-line (count)
+      :type exclusive
+      (if (eq evil-visual-selection 'char)
+          (evil-previous-visual-line count)
+        (evil-previous-line count)))
+
+    ; screen line movement outside operator-pending
+    (evil-define-key 'normal 'global
+      "j" #'evil-next-visual-line
+      "k" #'evil-previous-visual-line)
+    (evil-define-key 'visual 'global
+      "j" #'my-evil-visual-next-line
+      "k" #'my-evil-visual-previous-line)
+    (evil-define-key 'insert 'global
+      [down] #'evil-next-visual-line
+      [up] #'evil-previous-visual-line)
+
     ; undo system
     (evil-set-undo-system 'undo-redo)
 

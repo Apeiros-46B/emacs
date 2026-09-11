@@ -81,7 +81,8 @@
             purple   "#79508a"
             visual   "#e4dce8"
             bg-red   "#e9dbdf"
-            bg-green "#dce2da")))
+            bg-green "#dce2da"
+            bg-cur   "#fafafa")))
   ; }}}
   ; {{{ paradise
   ('paradise
@@ -102,7 +103,8 @@
             purple   "#a988b0"
             visual   "#493b4c" ; 15/85 mix of purple and bg1
             bg-red   "#4e2c2d" ; same for red
-            bg-green "#3c4136"))) ; same for green
+            bg-green "#3c4136" ; same for green
+            bg-cur   "#1a1a1a")))
   ; }}}
   ; {{{ everforest
   ('everforest
@@ -123,7 +125,8 @@
             purple   "#d699b6"
             visual   "#503946"
             bg-red   "#4e3e43"
-            bg-green "#404d44"))))
+            bg-green "#404d44"
+            bg-cur   "#2d373d"))))
   ; }}}
 
 (defun getcol (name) (plist-get customcolors name))
@@ -166,3 +169,4 @@
 (loadcfg "misc")
 (loadcfg "faces")
 (loadcfg "keymaps")
+(loadcfg "invasive")
