@@ -32,10 +32,10 @@
 ; {{{ font settings
 (setq nano-fonts-use t)
 (custom-set-faces
-  '(nano-mono     ((t (:family "Iosevka Custom" :height 140 :weight normal))))
+  '(nano-mono     ((t (:family "Iosevka Custom" :height 130 :weight normal))))
   '(nano-mono-alt ((t (:inherit nano-mono))))
   '(nano-sans     ((t (:inherit nano-mono))))
-  '(nano-serif    ((t (:family "Iosevka Custom Manuscript" :height 140 :weight normal))))
+  '(nano-serif    ((t (:family "Iosevka Custom Manuscript" :height 130 :weight normal))))
   '(nano-italic   ((t (:inherit nano-mono)))))
 
 (set-fontset-font "fontset-default"

@@ -4,6 +4,7 @@
 (setq max-specpdl-size 3200)
 (setq max-lisp-eval-depth 3200)
 (setq debug-on-error t)
+(setq native-comp-async-report-warnings-errors 'silent)
 
 ; hide stuff during loading
 (tool-bar-mode   -1)
