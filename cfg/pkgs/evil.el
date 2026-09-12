@@ -6,6 +6,7 @@
 ; main package
 (use-package evil
   :init
+    (setq evil-want-C-u-scroll t)
     (setq evil-want-integration t)
     (setq evil-want-keybinding nil)
 
@@ -46,7 +47,7 @@
           evil-visual-state-message nil
           evil-replace-state-message nil)
 
-    ; {{{ state indicator via cursor shape & color
+    ; state indicator via cursor shape & color
     (setq evil-emacs-state-cursor    `(box        ,(getcol 'red   ))
           evil-normal-state-cursor   `( box       ,(getcol 'fg1   ))
           evil-insert-state-cursor   `((bar . 2)  ,(getcol 'blue  ))
@@ -54,7 +55,6 @@
           evil-motion-state-cursor   `( box       ,(getcol 'fg2   ))
           evil-replace-state-cursor  `((hbar . 2) ,(getcol 'red   ))
           evil-operator-state-cursor `((hbar . 2) ,(getcol 'green )))
-    ; }}}
 
     ; activate
     (evil-mode 1)
@@ -95,3 +95,13 @@
 ; surround
 (use-package evil-surround
   :config (global-evil-surround-mode 1))
+
+; avy (not really evil, but close enough)
+(use-package avy
+  :config
+    (defkm 'normal "s" #'avy-goto-char-2)
+    (custom-set-faces
+      `(avy-lead-face   ((t (:background ,(getcol 'aqua) :foreground ,(getcol 'bg1)))))
+      `(avy-lead-face-0 ((t (:background ,(getcol 'bg-aqua) :foreground ,(getcol 'aqua)))))
+      `(avy-lead-face-1 ((t (:background ,(getcol 'bg-green) :foreground ,(getcol 'green)))))
+      `(avy-lead-face-2 ((t (:background ,(getcol 'bg4) :foreground ,(getcol 'fg2)))))))

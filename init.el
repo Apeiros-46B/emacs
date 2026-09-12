@@ -83,6 +83,8 @@
             visual   "#e4dce8"
             bg-red   "#e9dbdf"
             bg-green "#dce2da"
+            bg-aqua  "#d5e2e5"
+            bg-blue  "#dddfeb"
             bg-cur   "#fafafa")))
   ; }}}
   ; {{{ paradise
@@ -105,6 +107,8 @@
             visual   "#493b4c" ; 15/85 mix of purple and bg1
             bg-red   "#4e2c2d" ; same for red
             bg-green "#3c4136" ; same for green
+            bg-aqua  "#3c4746" ; same for aqua
+            bg-blue  "#3d464f" ; same for blue
             bg-cur   "#1a1a1a")))
   ; }}}
   ; {{{ everforest
@@ -127,6 +131,8 @@
             visual   "#503946"
             bg-red   "#4e3e43"
             bg-green "#404d44"
+            bg-aqua  "#455956"
+            bg-blue  "#394f5a"
             bg-cur   "#2d373d"))))
   ; }}}
 
