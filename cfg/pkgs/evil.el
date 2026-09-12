@@ -6,11 +6,14 @@
 ; main package
 (use-package evil
   :init
-    (setq evil-want-C-u-scroll t)
-    (setq evil-want-integration t)
-    (setq evil-want-keybinding nil)
+    (setq evil-want-C-u-scroll t
+          evil-want-integration t
+          evil-want-keybinding nil
+          evil-search-module 'evil-search
+          evil-ex-search-highlight-all t)
 
   :config
+    ; {{{ behavior
     (evil-define-motion my-evil-visual-next-line (count)
       :type exclusive
       (if (eq evil-visual-selection 'char)
@@ -23,15 +26,32 @@
         (evil-previous-line count)))
 
     ; screen line movement outside operator-pending
-    (evil-define-key 'normal 'global
-      "j" #'evil-next-visual-line
-      "k" #'evil-previous-visual-line)
-    (evil-define-key 'visual 'global
-      "j" #'my-evil-visual-next-line
-      "k" #'my-evil-visual-previous-line)
-    (evil-define-key 'insert 'global
-      [down] #'evil-next-visual-line
-      [up] #'evil-previous-visual-line)
+    (defkm :states 'insert "<down>" #'evil-next-visual-line)
+    (defkm :states 'insert "<up>" #'evil-previous-visual-line)
+    (defkm :states 'normal "j" #'evil-next-visual-line)
+    (defkm :states 'normal "k" #'evil-previous-visual-line)
+    (defkm :states 'visual "j" #'my-evil-visual-next-line)
+    (defkm :states 'visual "k" #'my-evil-visual-previous-line)
+
+    (defkm :states 'insert "C-S-v" "C-r \"")
+
+    ; acts like :nmap cc :nohlsearch<CR> while preserving c{motion}
+    (defun my-evil-c ()
+      (interactive)
+      (let ((event (read-event)))
+        (if (eq event ?c)
+            (evil-ex-nohighlight)
+          (setq unread-command-events
+                (append (list event) unread-command-events))
+          ; `evil-change' derives operator from `this-command', preserve when delegating so
+          ; compound changes retain their original range
+          (condition-case nil
+              (let ((this-command 'evil-change)
+                    (real-this-command 'evil-change))
+                (call-interactively #'evil-change))
+            (error nil)))))
+
+    (defkm :states 'normal "c" #'my-evil-c)
 
     ; undo system
     (evil-set-undo-system 'undo-redo)
@@ -41,7 +61,9 @@
 
     ; 2 spc indentation
     (setq evil-shift-width 2)
+    ; }}}
 
+    ; {{{ style
     ; :set noshowmode
     (setq evil-insert-state-message nil
           evil-visual-state-message nil
@@ -56,24 +78,26 @@
           evil-replace-state-cursor  `((hbar . 2) ,(getcol 'red   ))
           evil-operator-state-cursor `((hbar . 2) ,(getcol 'green )))
 
-    ; activate
+    (custom-set-faces
+      `(evil-ex-info ((t (:foreground ,(getcol 'blue) :weight bold))))
+      `(evil-ex-search ((t (:inherit isearch))))
+      `(evil-ex-lazy-highlight ((t (:inherit lazy-highlight))))
+      `(evil-ex-substitute-matches ((t (:background ,(getcol 'bg-red) :foreground ,(getcol 'red)))))
+      `(evil-ex-substitute-replacement ((t (:background ,(getcol 'bg-green) :foreground ,(getcol 'green))))))
+    ; }}}
+
     (evil-mode 1)
 
   :custom
-    (evil-move-cursor-back t)
+    (evil-move-cursor-back t))
 
-    ; {{{ custom bindings
-    (defkm 'insert "C-S-v" "C-r \""))
-    ; }}}
-
-; {{{ vim's C-a and C-x
+; vim's C-a and C-x
 (use-package evil-numbers
   :commands evil-numbers/inc-at-pt evil-numbers/dec-at-pt
 
   :init
-    (defkm '(normal visual) "C-a"   'evil-numbers/inc-at-pt)
-    (defkm '(normal visual) "C-S-a" 'evil-numbers/dec-at-pt))
-; }}}
+    (defkm :states '(normal visual) "C-a"   'evil-numbers/inc-at-pt)
+    (defkm :states '(normal visual) "C-S-a" 'evil-numbers/dec-at-pt))
 
 ; bindings for misc things
 (use-package evil-collection
@@ -99,7 +123,8 @@
 ; avy (not really evil, but close enough)
 (use-package avy
   :config
-    (defkm 'normal "s" #'avy-goto-char-2)
+    (defkm :states 'normal "s" #'avy-goto-char-2)
+    (defkm :states 'visual "s" #'evil-change)
     (custom-set-faces
       `(avy-lead-face   ((t (:background ,(getcol 'aqua) :foreground ,(getcol 'bg1)))))
       `(avy-lead-face-0 ((t (:background ,(getcol 'bg-aqua) :foreground ,(getcol 'aqua)))))

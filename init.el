@@ -5,6 +5,8 @@
 (setq max-lisp-eval-depth 3200)
 (setq debug-on-error t)
 (setq native-comp-async-report-warnings-errors 'silent)
+(when (eq system-type 'android)
+  (setq touch-screen-display-keyboard t))
 
 ; hide stuff during loading
 (tool-bar-mode   -1)

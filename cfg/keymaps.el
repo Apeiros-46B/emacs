@@ -1,8 +1,8 @@
 ; vim:et
 
 ; convenience
-(defkm 'normal "C-q"   'evil-visual-block)
-(defkm 'normal "C-S-j" 'eval-print-last-sexp)
+(defkm :states 'normal "C-q"   'evil-visual-block)
+(defkm :states 'normal "C-S-j" 'eval-print-last-sexp)
 
 ; buffers
 (ldr-defkm "x" 'kill-current-buffer)

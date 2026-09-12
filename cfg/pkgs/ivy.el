@@ -31,7 +31,7 @@
 
   :custom
     ; {{{ custom options
-    (ivy-height 6)
+    (ivy-height 8)
     (ivy-count-format "")
     (ivy-initial-inputs-alist: '((counsel-minor . "^+")
                                  (counsel-package . "^+")
@@ -43,6 +43,7 @@
                                  (Man-completion-table . "^")
                                  (woman . "^")))
     (ivy-use-virtual-buffers nil)
+    (ivy-on-del-error-function #'ignore)
     ; }}}
 
   :config

@@ -13,7 +13,7 @@
 
   :init
     ; custom keymaps
-    (defkm 'insert "C-;" 'yas-expand)
+    (defkm :states 'insert "C-;" 'yas-expand)
     (ldr-defkm "sr" 'yas-reload-all)
     (ldr-defkm "sn" 'yas-new-snippet)
     (ldr-defkm "se" 'yas-visit-snippet-file)

@@ -3,6 +3,9 @@
 (custom-set-faces
   `(minibuffer-prompt ((t (:background ,(getcol 'bg1) :foreground ,(getcol 'green) :weight bold))))
 
+  `(lazy-highlight ((t (:background ,(getcol 'bg-aqua) :foreground ,(getcol 'aqua)))))
+  `(isearch ((t (:background ,(getcol 'aqua) :foreground ,(getcol 'bg1)))))
+
   ; keybind
   `(help-key-binding ((t (:inherit nil :foreground ,(getcol 'blue)))))
 
