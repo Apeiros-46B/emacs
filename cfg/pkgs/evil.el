@@ -32,8 +32,10 @@
     (defkm :states 'normal "k" #'evil-previous-visual-line)
     (defkm :states 'visual "j" #'my-evil-visual-next-line)
     (defkm :states 'visual "k" #'my-evil-visual-previous-line)
-
     (defkm :states 'insert "C-S-v" "C-r \"")
+
+    ; replace lost C-u
+    (defkm "M-u" #'universal-argument)
 
     ; acts like :nmap cc :nohlsearch<CR> while preserving c{motion}
     (defun my-evil-c ()

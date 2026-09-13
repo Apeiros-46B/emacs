@@ -4,19 +4,16 @@
 (use-package org
   :mode ("\\.org\\'" . org-mode)
   :commands
-    my-org-capture-tmp
-    my-org-capture-agenda
+    my-org-capture
     my-org-goto-tmp-file
     my-org-goto-agenda-dir
+    my-org-open-current-journal
+    my-org-close-clean-journal-buffers
+    my-org-insert-date
+    my-org-insert-datetime
+    my-org-insert-datetime-now
 
   :hook
-    ; TODO: i'm not sure why this is needed
-    (org-mode . org-modern-mode)
-    (org-mode . org-fragtog-mode)
-    (org-mode . org-appear-mode)
-    (org-mode . evil-org-mode)
-    (org-mode . yas-minor-mode)
-
     ; use slab font in org files
     (org-mode . (lambda ()
       (face-remap-add-relative 'default :family (face-attribute 'nano-serif :family))))
@@ -34,12 +31,12 @@
   :init
     ; {{{ custom keymaps
     (ldr-defkm "a" 'org-agenda)
-    (ldr-defkm "cc" 'my-org-capture-tmp)
+    (ldr-defkm "c" 'my-org-capture)
     (ldr-defkm "gc" 'my-org-goto-tmp-file)
-    (ldr-defkm "ca" 'my-org-capture-agenda)
     (ldr-defkm "ga" 'my-org-goto-agenda-dir)
+    (ldr-defkm "gj" 'my-org-open-current-journal)
+    (ldr-defkm "gk" 'my-org-close-clean-journal-buffers)
 
-    ; magic
     (ldr-defkm 'org-mode-map "SPC" 'org-ctrl-c-ctrl-c)
 
     ; link creation
@@ -47,9 +44,12 @@
     (ldr-defkm 'org-mode-map "oi" 'org-insert-link)
 
     (ldr-defkm 'org-mode-map "op" 'org-priority)
-    (ldr-defkm 'org-mode-map "ot" 'org-time-stamp)
     (ldr-defkm 'org-mode-map "oL" 'org-latex-preview)
     (ldr-defkm 'org-mode-map "oI" 'org-toggle-inline-images)
+
+    (ldr-defkm 'org-mode-map "od" 'my-org-insert-date)
+    (ldr-defkm 'org-mode-map "ot" 'my-org-insert-datetime)
+    (ldr-defkm 'org-mode-map "on" 'my-org-insert-datetime-now)
 
     (defkm 'normal 'org-mode-map "C-]" 'org-open-at-point)
     (defkm 'normal 'org-mode-map "RET" 'org-open-at-point)
@@ -74,7 +74,7 @@
     (defkm 'insert 'org-mode-map "C-k" 'org-move-subtree-up)
 
     ; misc
-    (ldr-defkm 'normal 'org-mode-map "*" 'org-toggle-heading)
+    (ldr-defkm 'normal 'org-mode-map "h" 'org-toggle-heading)
     ; }}}
 
   :custom
@@ -82,6 +82,7 @@
     ; {{{ functionality
     (org-directory (directory-file-name (file-truename "~/org/")))
     (org-agenda-files `(,(concat org-directory "/agenda")))
+    (org-attach-id-dir (concat org-directory "/blob/attach"))
 
     ; don't clutter my fs with latex image cache
     (org-preview-latex-image-directory (get-cfg-path "cache/ltximg/"))
@@ -100,12 +101,12 @@
     (org-insert-heading-respect-content t)
 
     (org-todo-keywords
-      '((sequence "TASK(t!)" "STUDY(s!)" "WORK(w!)" "|" "DONE(d!)")))
+      '((sequence "TODO(t!)" "EXEC(e!)" "WAIT(w!)" "PERM(p!)" "|" "DONE(d!)")))
     (org-todo-repeat-to-state t) ; use prev state when repeating task
 
     (org-priority-highest 1)
-    (org-priority-lowest  8)
-    (org-priority-default 3)
+    (org-priority-lowest  4)
+    (org-priority-default 2)
 
     (org-agenda-skip-scheduled-if-deadline-is-shown t)
     (org-agenda-repeating-timestamp-show-all nil)
@@ -139,10 +140,6 @@
     ; }}}
 
   :config
-    (mkdir org-directory :parents)
-    (mkdir (car org-agenda-files) :parents)
-
-    ; org-protocol
     (require 'org-protocol)
 
     ; {{{ custom options (depends on default value)
@@ -173,10 +170,9 @@
     ; }}}
 
     ; {{{ org-agenda
-    ; helper function
     (defun my-org-skip-subtree-if-priority (priority)
       "Skip an agenda subtree if it has a priority of PRIORITY.
-      PRIORITY may be a number from 1-8."
+      PRIORITY may be a number from 1-4."
       (let ((subtree-end (save-excursion (org-end-of-subtree t)))
             (pri-value (* 1000 (- org-lowest-priority priority)))
             (pri-current (org-get-priority (thing-at-point 'line t))))
@@ -196,29 +192,128 @@
             (org-agenda-skip-if nil '(scheduled deadline))))))))))
     ; }}}
 
+    ; {{{ org-attach
+    ; TODO: real config of org-attach
+    (require 'org-attach)
+
+    (defun my-org-attach-annex-files ()
+      "Add the current heading's attachments to git-annex."
+      (let ((dir (org-attach-dir)))
+        (when (file-directory-p dir)
+          (dolist (file (directory-files dir t directory-files-no-dot-files-regexp))
+            (when (file-regular-p file)
+              (my-org-download-annex-file file))))))
+
+    (add-hook 'org-attach-after-change-hook #'my-org-attach-annex-files)
+    ; }}}
+
     ; {{{ quick capture and goto capture files
-    (add-hook 'org-capture-mode-hook 'evil-insert-state)
+    (add-hook 'org-capture-mode-hook #'evil-insert-state)
 
     (setq my-org-tmp-file (concat org-directory "/tmp.org"))
 
     (setq org-capture-templates
-      `(("t" "temporary" entry (file ,my-org-tmp-file) "* [%<%Y-%m-%d %a %H:%M>] %?"
+      `(("c" "temporary" entry (file ,my-org-tmp-file) "* [%<%Y-%m-%d %a %H:%M>] %?"
          :empty-lines-before 2)
-        ("a" "task/school" entry
+        ("s" "task (school)" entry
          (file+headline ,(concat (car org-agenda-files) "/school.org") "tasks")
-         "* TASK [#3] %?\n   DEADLINE: "
+         "* TODO %?\nDEADLINE: "
          :empty-lines 2)
-        ("w" "website" entry (file ,my-org-tmp-file)
-          "* [%<%Y-%m-%d %a %H:%M>] %?\n  - [[%:link][%:description]]\n  - \"%i\""
-          :empty-lines 1)))
+        ("p" "task (projects)" entry
+         (file+headline ,(concat (car org-agenda-files) "/projects.org") "tasks")
+         "* TODO %?\nDEADLINE: "
+         :empty-lines 2)
+        ("r" "task (tbots)" entry
+         (file+headline ,(concat (car org-agenda-files) "/tbots.org") "tasks")
+         "* TODO %?\nDEADLINE: "
+         :empty-lines 2)))
 
-    (defun my-org-capture-tmp () (interactive) (org-capture nil "t"))
-    (defun my-org-capture-agenda () (interactive) (org-capture nil "a"))
-
+    (defun my-org-capture () (interactive) (org-capture nil))
     (defun my-org-goto-tmp-file () (interactive) (find-file my-org-tmp-file))
-    (defun my-org-goto-agenda-dir ()
+    (defun my-org-goto-agenda-dir () (interactive) (dired org-agenda-files))
+    ; }}}
+
+    ; {{{ journal
+    (setq my-org-journal-current-dir (concat org-directory "/journal/cur/"))
+    (setq my-org-journal-template-file (concat org-directory "/journal/template.org"))
+
+    (defun my-org-journal-current-file ()
+      (expand-file-name (format-time-string "%Y-%m-%d.org") my-org-journal-current-dir))
+
+    (defun my-org-open-current-journal ()
+      "Open today's journal, creating it from the journal template if needed."
       (interactive)
-      (dired org-agenda-files)))
+      (let* ((file (my-org-journal-current-file))
+             (new-file (not (file-exists-p file))))
+        (make-directory my-org-journal-current-dir t)
+        (find-file file)
+        (when new-file
+          (require 'org-capture)
+          (insert
+           (org-capture-fill-template
+            (with-temp-buffer
+              (insert-file-contents my-org-journal-template-file)
+              (buffer-string))))
+          (save-buffer))))
+
+    (defun my-org-close-clean-journal-buffers ()
+      "Close unmodified Org buffers anywhere under the journal directory."
+      (interactive)
+      (let ((journal-dir (expand-file-name "journal/" org-directory))
+            modified-buffers
+            closed-count)
+        (dolist (buffer (buffer-list))
+          (with-current-buffer buffer
+            (when (and buffer-file-name
+                       (string-match-p "\\.org\\'" buffer-file-name)
+                       (file-in-directory-p (expand-file-name buffer-file-name)
+                                            journal-dir))
+              (if (buffer-modified-p)
+                  (push (buffer-name) modified-buffers)
+                (kill-buffer buffer)
+                (setq closed-count (1+ (or closed-count 0)))))))
+        (if modified-buffers
+            (message "Warning: kept modified journal buffer%s: %s"
+                     (if (= (length modified-buffers) 1) "" "s")
+                     (mapconcat #'identity (nreverse modified-buffers) ", "))
+          (message "Closed %d unmodified journal buffer%s"
+                   (or closed-count 0)
+                   (if (= (or closed-count 0) 1) "" "s")))))
+    ; }}}
+
+    ; {{{ better timestamps
+    (defun my-org-move-after-evil-point ()
+      (when (and (bound-and-true-p evil-local-mode)
+                 (evil-normal-state-p)
+                 (not (eolp)))
+        (forward-char 1)))
+
+    (defun my-org-agenda-file-p ()
+      (and buffer-file-name
+           (file-in-directory-p (expand-file-name buffer-file-name)
+                                (expand-file-name "agenda/" org-directory))))
+
+    (defun my-org-insert-timestamp (time with-time)
+      (my-org-move-after-evil-point)
+      (org-insert-time-stamp time with-time (not (my-org-agenda-file-p))))
+
+    (defun my-org-insert-date ()
+      "Prompt for a date, defaulting to today, and insert it."
+      (interactive)
+      (my-org-insert-timestamp
+       (org-read-date nil t nil "Date: " (current-time)) nil))
+
+    (defun my-org-insert-datetime (&optional time)
+      "Prompt for a date and time, defaulting to now, and insert it.
+      When TIME is non-nil, insert it without prompting."
+      (interactive)
+      (my-org-insert-timestamp
+       (or time (org-read-date t t nil "Date and time: " (current-time))) t))
+
+    (defun my-org-insert-datetime-now ()
+      "Insert the current date and time without prompting."
+      (interactive)
+      (my-org-insert-datetime (current-time))))
     ; }}}
 ; }}}
 
@@ -230,6 +325,7 @@
     (org-roam-capture-new-node . evil-insert-state)
 
   :init
+    ; TODO: not initialized immediately because of :after
     ; {{{ custom keymaps
     (ldr-defkm "rl" 'org-roam-buffer-toggle)
     (ldr-defkm "rf" 'org-roam-node-find)
@@ -244,9 +340,6 @@
   :custom
     ; {{{ custom options
     (org-roam-directory org-directory)
-
-    ; prevent encrypted files from being included in org-roam
-    (org-roam-file-exclude-regexp '("data/" ".*[.]org[.]gpg$"))
 
     ; node display in capture/find selector
     (org-roam-node-display-template
@@ -372,20 +465,17 @@
 
     ; {{{ custom todo and priority faces
     (org-modern-todo-faces
-          `(("TASK"      :foreground ,(getcol 'fg2) :background ,(getcol 'bg3))
-            ("STUDY"     :foreground ,(getcol 'bg1) :background ,(getcol 'green))
-            ("WORK"      :foreground ,(getcol 'bg1) :background ,(getcol 'purple))
-            ("DONE"      :foreground ,(getcol 'fg2) :background ,(getcol 'bg3))))
+      `(("TODD"      :foreground ,(getcol 'bg1)   :background ,(getcol 'yellow))
+        ("EXEC"      :foreground ,(getcol 'bg1)   :background ,(getcol 'red))
+        ("WAIT"      :foreground ,(getcol 'bg1)   :background ,(getcol 'blue))
+        ("PERM"      :foreground ,(getcol 'bg1)   :background ,(getcol 'purple))
+        ("DONE"      :foreground ,(getcol 'green) :background ,(getcol 'bg-green))))
 
     (org-modern-priority-faces
-          `((?1 :foreground ,(getcol 'bg1) :background ,(getcol 'red))
-            (?2 :foreground ,(getcol 'bg1) :background ,(getcol 'yellow))
-            (?3 :foreground ,(getcol 'bg1) :background ,(getcol 'green))
-            (?4 :foreground ,(getcol 'bg1) :background ,(getcol 'fg2))
-            (?5 :foreground ,(getcol 'fg2) :background ,(getcol 'bg3))
-            (?6 :foreground ,(getcol 'fg2) :background ,(getcol 'bg3))
-            (?7 :foreground ,(getcol 'fg2) :background ,(getcol 'bg3))
-            (?8 :foreground ,(getcol 'fg2) :background ,(getcol 'bg3))))
+      `((?1 :foreground ,(getcol 'bg1) :background ,(getcol 'red))
+        (?2 :foreground ,(getcol 'bg1) :background ,(getcol 'yellow))
+        (?3 :foreground ,(getcol 'bg1) :background ,(getcol 'green))
+        (?4 :foreground ,(getcol 'bg1) :background ,(getcol 'fg2))))
     ; }}}
 
   :config
@@ -485,7 +575,7 @@
 
   :custom
     ; custom options
-    (org-download-image-dir (concat org-directory "/img"))
+    (org-download-image-dir (concat org-directory "/blob/paste"))
     (org-download-heading-lvl nil) ; don't save under heading dirs
     (org-download-abbreviate-filename-function 'expand-file-name) ; absolute paths
 
@@ -504,10 +594,50 @@
     ; deletion for previewed images
     (defun my-org-download-delete ()
       (interactive)
+      (org-remove-inline-images (point) (+ 1 (point))) ; unrender preview
+      (move-point-visually 1)                          ; move point onto the link body
+      (org-download-delete)))                          ; delete image
 
-      ; unrender preview
-      (org-remove-inline-images (point) (+ 1 (point)))
+    ;; `org-download-after-download-hook' is not provided by org-download.
+    ;; Schedule the annex operation after its output exists, which also covers
+    ;; URL downloads that org-download writes asynchronously.
+    (defvar my-org-download-annex--pending (make-hash-table :test #'equal))
 
-      (move-point-visually 1) ; move point onto the link body
-      (org-download-delete))) ; delete image
+    (defun my-org-download-annex--when-ready (file attempts)
+      (cond
+       ((not (file-exists-p file))
+        (when (> attempts 0)
+          (run-at-time 0.2 nil #'my-org-download-annex--when-ready
+                       file (1- attempts))))
+       ((zerop (file-attribute-size (file-attributes file)))
+        (when (> attempts 0)
+          (run-at-time 0.2 nil #'my-org-download-annex--when-ready
+                       file (1- attempts))))
+       (t
+        (remhash file my-org-download-annex--pending)
+        (let ((default-directory org-directory)
+              (relative-file (file-relative-name file org-directory)))
+          ;; `annex.addunlocked' is set in this repository.  Recent git-annex
+          ;; versions use that setting; `git annex add --unlocked' is invalid.
+          (if (eq 0 (process-file "git" nil nil nil "annex" "add"
+                                  "--" relative-file))
+              (message "Added %s to git-annex" relative-file)
+            (message "Could not add %s to git-annex" relative-file))))))
+
+    (defun my-org-download-annex-file (file)
+      "Add FILE to git-annex once org-download has finished writing it."
+      (let ((file (expand-file-name file)))
+        (when (and (file-in-directory-p file org-directory)
+                   (not (gethash file my-org-download-annex--pending)))
+          (puthash file t my-org-download-annex--pending)
+          (my-org-download-annex--when-ready file 50))))
+
+    (advice-add 'org-download--image :after
+                (lambda (_link filename)
+                  (my-org-download-annex-file filename)))
+    ;; This also covers the base64 drag-and-drop path, which bypasses
+    ;; `org-download--image'.  Duplicate notifications are de-duplicated.
+    (advice-add 'org-download-insert-link :after
+                (lambda (_link filename)
+                  (my-org-download-annex-file filename)))
 ; }}}

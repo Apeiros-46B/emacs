@@ -29,22 +29,33 @@
       nano-light-faded      (getcol 'fg2))
 ; }}}
 
-; {{{ font settings
+; font settings
 (setq nano-fonts-use t)
 (custom-set-faces
-  '(nano-mono     ((t (:family "Iosevka Custom" :height 130 :weight normal))))
+  '(nano-mono     ((t (:family "Iosevka Custom" :height 125 :weight normal))))
   '(nano-mono-alt ((t (:inherit nano-mono))))
   '(nano-sans     ((t (:inherit nano-mono))))
-  '(nano-serif    ((t (:family "Iosevka Custom Manuscript" :height 130 :weight normal))))
+  '(nano-serif    ((t (:family "Iosevka Custom Manuscript" :height 125 :weight normal))))
   '(nano-italic   ((t (:inherit nano-mono)))))
 
-(set-fontset-font "fontset-default"
-                  'emoji '("Twitter Color Emoji" . "iso10646-1") nil 'prepend)
-(set-fontset-font "fontset-default"
-                  '(#xe000 . #xf8ff) "Iosevka Nerd Font Mono")
-; }}}
-
 (if my-lightmode (nano-light) (nano-dark))
+
+; {{{ override frame opts
+(defun my-setup-fontsets (&optional frame)
+  (with-selected-frame (or frame (selected-frame))
+    ; TODO: emojis are more than 2 cells wide
+    (set-fontset-font nil 'symbol (font-spec :family "Twitter Color Emoji") nil 'prepend)
+    (set-fontset-font nil 'emoji  (font-spec :family "Twitter Color Emoji") nil 'prepend)
+
+    (let ((nfm (font-spec :family "Iosevka Nerd Font Mono")))
+      (set-fontset-font nil '(#xe000 . #xf8ff) nfm nil 'prepend)
+      (set-fontset-font nil '(#xf0000 . #xffffd) nfm nil 'prepend)
+      (set-fontset-font nil '(#x100000 . #x10fffd) nfm nil 'prepend))))
+
+(when (display-graphic-p)
+  (if (daemonp)
+      (add-hook 'after-make-frame-functions #'my-setup-fontsets)
+    (my-setup-fontsets)))
 
 (setq default-frame-alist
   (append (list
@@ -65,6 +76,7 @@
 
 ; no ugly checkbox button
 (setq widget-image-enable nil)
+; }}}
 
 ; {{{ options
 ; no stuff on startup

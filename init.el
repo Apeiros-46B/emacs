@@ -4,6 +4,7 @@
 (setq max-specpdl-size 3200)
 (setq max-lisp-eval-depth 3200)
 (setq debug-on-error t)
+(setq debug-on-quit nil)
 (setq native-comp-async-report-warnings-errors 'silent)
 (when (eq system-type 'android)
   (setq touch-screen-display-keyboard t))

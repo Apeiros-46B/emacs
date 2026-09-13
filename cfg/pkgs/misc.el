@@ -2,12 +2,11 @@
 
 (use-package hide-mode-line)
 
-; TODO: this currently shrinks the modeline and makes it
-; non-continuous when there is a split. temp workaround is just to
-; shrink the emacs frame size another way
-(use-package visual-fill-column
-  :commands visual-fill-column-mode
-  :custom (visual-fill-column-enable-sensible-window-split t))
+; TODO: disabled for now since this currently shrinks the modeline and makes it
+; non-continuous when there is a split that is larger than the column count
+; (use-package visual-fill-column
+;   :commands visual-fill-column-mode
+;   :custom (visual-fill-column-enable-sensible-window-split t))
 
 (use-package ligature
   :config

@@ -1,3 +1,3 @@
+- [ ] org frontmatter face + hl-line/visual overrides org-modern pill faces
 - [ ] org-modern table horizontal separators have a tall empty space, ideally it should shrink to just the separator-sized line (like older versions of org-modern), if that's not possible it should center the horizontal line rather than it being skewed to the top
 - [ ] android config
-- [ ] some colors are incorrect, e.g. the [Incomplete command] face

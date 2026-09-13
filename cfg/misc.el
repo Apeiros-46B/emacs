@@ -34,6 +34,7 @@
 (setq inhibit-startup-message t)
 (setq inhibit-startup-echo-area-message t)
 (setq server-client-instructions nil)
+(add-to-list 'debug-ignored-errors "Kill ring is empty")
 
 ; Monday is the start of the week.
 (setq calendar-week-start-day 1)

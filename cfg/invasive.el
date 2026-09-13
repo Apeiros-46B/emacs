@@ -62,6 +62,7 @@
 ; }}}
 
 ; {{{ org-modern pill overlays on top of line highlights
+; TODO: frontmatter when hl-line or visual
 (defconst my-org-modern-pill-faces
   '(org-modern-date-active
     org-modern-date-inactive
@@ -93,11 +94,28 @@
     (face-attribute 'hl-line :background nil t))
    (t (face-attribute 'default :background nil t))))
 
+(defun my-org-modern-pill-buffer-p ()
+  "Return non-nil when the current buffer can contain org-modern pills."
+  (or (bound-and-true-p org-modern-mode)
+      (derived-mode-p 'org-agenda-mode)))
+
+(defun my-org-modern-pill-face (face)
+  "Return the org-modern pill face contained in FACE."
+  (seq-find (lambda (item) (memq item my-org-modern-pill-faces))
+            (ensure-list face)))
+
 (defun my-org-modern-pill-overlay-face (position face)
-  (let ((box (copy-tree (face-attribute 'org-modern-label :box nil t))))
+  (let* ((pill-face (or (my-org-modern-pill-face face) 'org-modern-label))
+         (box (copy-tree (face-attribute 'org-modern-label :box nil t))))
     (setf (plist-get box :color)
           (my-org-modern-pill-padding-background position))
-    (cons `(:box ,box) (ensure-list face))))
+    ;; An Org keyword/frontmatter face can otherwise override the colours
+    ;; inherited by FACE.  Put the resolved colours in the overlay itself,
+    ;; while leaving height and the other face attributes untouched.
+    (cons `(:box ,box
+            :foreground ,(face-attribute pill-face :foreground nil t)
+            :background ,(face-attribute pill-face :background nil t))
+          (ensure-list face))))
 
 (defun my-org-modern-pill-face-p (face)
   (seq-some (lambda (item)
@@ -128,11 +146,27 @@
     (delete-overlay overlay)))
 
 (defun my-org-modern-fontify-pill-overlays (beg end &rest _)
-  (when (bound-and-true-p org-modern-mode)
+  (when (my-org-modern-pill-buffer-p)
     (my-org-modern-pill-overlays beg end)))
 
+(defun my-org-modern-refontify-pills (&optional buffer)
+  "Immediately fontify BUFFER and rebuild its org-modern pill overlays."
+  (when (buffer-live-p (or buffer (current-buffer)))
+    (with-current-buffer (or buffer (current-buffer))
+      (when (my-org-modern-pill-buffer-p)
+        ;; Agenda buffers are read-only, and their text properties are part
+        ;; of the agenda display contract.  They only need their overlays
+        ;; rebuilt after `org-modern-agenda' has set the base faces.
+        (unless (derived-mode-p 'org-agenda-mode)
+          (font-lock-flush (point-min) (point-max))
+          (font-lock-ensure (point-min) (point-max)))
+        (my-org-modern-pill-overlays (point-min) (point-max))))))
+
+(defun my-org-modern-refontify-timestamp (&rest _)
+  (my-org-modern-refontify-pills))
+
 (defun my-org-modern-refresh-pill-overlays (&rest _)
-  (when (derived-mode-p 'org-mode)
+  (when (my-org-modern-pill-buffer-p)
     (dolist (overlay (overlays-in (point-min) (point-max)))
       (when (overlay-get overlay 'my-org-modern-pill-overlay)
         (overlay-put overlay 'face
@@ -142,6 +176,9 @@
 
 (advice-add 'font-lock-fontify-region :after
             #'my-org-modern-fontify-pill-overlays)
+(advice-add 'org-time-stamp :after #'my-org-modern-refontify-timestamp)
+(add-hook 'org-capture-mode-hook #'my-org-modern-refontify-pills)
+(add-hook 'org-agenda-finalize-hook #'my-org-modern-refontify-pills t)
 (advice-add 'global-hl-line-highlight :after
             #'my-org-modern-refresh-pill-overlays)
 (advice-add 'evil-visual-highlight :after

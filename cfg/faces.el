@@ -8,6 +8,7 @@
 
   ; keybind
   `(help-key-binding ((t (:inherit nil :foreground ,(getcol 'blue)))))
+  `(escape-glyph ((t (:foreground ,(getcol 'yellow)))))
 
   ; selected region
   `(region ((t (:background ,(getcol 'visual))))))
