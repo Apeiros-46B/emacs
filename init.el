@@ -9,6 +9,21 @@
 (when (eq system-type 'android)
   (setq touch-screen-display-keyboard t))
 
+; org is the default working directory for Emacs and newly created buffers
+(setq-default default-directory (file-name-as-directory (expand-file-name "~/org")))
+(setq default-directory (default-value 'default-directory))
+
+; create missing parent directories when visiting a new file
+(defun my-create-parent-directory-for-new-file ()
+  "Create BUFFER-FILE-NAME's parent directory, then visit the new file."
+  (when-let* ((file buffer-file-name)
+              (directory (file-name-directory file)))
+    (make-directory directory t)
+    t))
+
+(add-hook 'find-file-not-found-functions
+          #'my-create-parent-directory-for-new-file)
+
 ; hide stuff during loading
 (tool-bar-mode   -1)
 (menu-bar-mode   -1)

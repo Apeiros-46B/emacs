@@ -1,11 +1,12 @@
 ; vim:et
+; TODO: org-ql for searching capture and journal
 
 ; {{{ org
 (use-package org
   :mode ("\\.org\\'" . org-mode)
   :commands
     my-org-capture
-    my-org-goto-tmp-file
+    my-org-goto-current-capture-file
     my-org-goto-agenda-dir
     my-org-open-current-journal
     my-org-close-clean-journal-buffers
@@ -32,7 +33,7 @@
     ; {{{ custom keymaps
     (ldr-defkm "a" 'org-agenda)
     (ldr-defkm "c" 'my-org-capture)
-    (ldr-defkm "gc" 'my-org-goto-tmp-file)
+    (ldr-defkm "gc" 'my-org-goto-current-capture-file)
     (ldr-defkm "ga" 'my-org-goto-agenda-dir)
     (ldr-defkm "gj" 'my-org-open-current-journal)
     (ldr-defkm "gk" 'my-org-close-clean-journal-buffers)
@@ -82,7 +83,7 @@
     ; {{{ functionality
     (org-directory (directory-file-name (file-truename "~/org/")))
     (org-agenda-files `(,(concat org-directory "/agenda")))
-    (org-attach-id-dir (concat org-directory "/blob/attach"))
+    (org-attach-id-dir (concat org-directory "/.blob/org-attach"))
 
     ; don't clutter my fs with latex image cache
     (org-preview-latex-image-directory (get-cfg-path "cache/ltximg/"))
@@ -143,7 +144,7 @@
     (require 'org-protocol)
 
     ; {{{ custom options (depends on default value)
-    (setq org-format-latex-options (plist-put org-format-latex-options :scale 0.25))
+    (setq org-format-latex-options (plist-put org-format-latex-options :scale 2.0))
 
     ; open links in current pane
     (setf (alist-get 'file org-link-frame-setup) 'find-file)
@@ -207,29 +208,35 @@
     (add-hook 'org-attach-after-change-hook #'my-org-attach-annex-files)
     ; }}}
 
-    ; {{{ quick capture and goto capture files
+    ; {{{ capture log
     (add-hook 'org-capture-mode-hook #'evil-insert-state)
 
-    (setq my-org-tmp-file (concat org-directory "/tmp.org"))
+    (setq my-org-capture-dir (concat org-directory "/capture/"))
 
-    (setq org-capture-templates
-      `(("c" "temporary" entry (file ,my-org-tmp-file) "* [%<%Y-%m-%d %a %H:%M>] %?"
-         :empty-lines-before 2)
-        ("s" "task (school)" entry
-         (file+headline ,(concat (car org-agenda-files) "/school.org") "tasks")
-         "* TODO %?\nDEADLINE: "
-         :empty-lines 2)
-        ("p" "task (projects)" entry
-         (file+headline ,(concat (car org-agenda-files) "/projects.org") "tasks")
-         "* TODO %?\nDEADLINE: "
-         :empty-lines 2)
-        ("r" "task (tbots)" entry
-         (file+headline ,(concat (car org-agenda-files) "/tbots.org") "tasks")
-         "* TODO %?\nDEADLINE: "
-         :empty-lines 2)))
+    (defun my-org-capture-current-file ()
+      "Return the append-only capture log for the current month."
+      (make-directory my-org-capture-dir t)
+      (expand-file-name (format-time-string "%Y-%m.org") my-org-capture-dir))
+
+    (cl-flet ((task-capture-template (key tag &optional narrow_tag)
+      `(,key ,(concat (or narrow_tag tag) " (task)") entry
+        (file+headline ,(concat (car org-agenda-files) "/" tag ".org") "tasks")
+        ,(concat "* TODO %? :" tag ":" (when narrow_tag (concat narrow_tag ":"))
+                 "\nDEADLINE: ")
+        :empty-lines 2)))
+      (setq org-capture-templates
+        `(("c" "capture log" entry (file my-org-capture-current-file)
+           "* [%<%Y-%m-%d %a %H:%M>] %?"
+           :empty-lines-before 2)
+          ,(task-capture-template "s" "school")
+          ,(task-capture-template "w" "work")
+          ,(task-capture-template "d" "projects" "dev")
+          ,(task-capture-template "a" "projects" "art"))))
 
     (defun my-org-capture () (interactive) (org-capture nil))
-    (defun my-org-goto-tmp-file () (interactive) (find-file my-org-tmp-file))
+    (defun my-org-goto-current-capture-file ()
+      (interactive)
+      (find-file (my-org-capture-current-file)))
     (defun my-org-goto-agenda-dir () (interactive) (dired org-agenda-files))
     ; }}}
 
@@ -319,27 +326,33 @@
 
 ; {{{ org-roam
 (use-package org-roam
-  :after org
+  :defer t
+
+  :commands
+    org-roam-buffer-toggle
+    org-roam-node-find
+    org-roam-node-insert
+    org-roam-capture
+    org-roam-db-sync
 
   :hook
     (org-roam-capture-new-node . evil-insert-state)
 
   :init
-    ; TODO: not initialized immediately because of :after
     ; {{{ custom keymaps
+    ; TODO: theme the org-roam-buffer
+    ; TODO: capturing shows existing items and doesn't let you make a new one if your new
+    ; note title is a substring of an existing one due to the search menu
     (ldr-defkm "rl" 'org-roam-buffer-toggle)
     (ldr-defkm "rf" 'org-roam-node-find)
     (ldr-defkm "ri" 'org-roam-node-insert)
-    (ldr-defkm "rg" 'org-roam-graph)
     (ldr-defkm "rn" 'org-roam-capture)
-    (ldr-defkm "rd" 'org-roam-dailies-capture-today)
-    (ldr-defkm "rD" 'org-roam-dailies-goto-today)
     (ldr-defkm "rs" 'org-roam-db-sync)
     ; }}}
 
   :custom
     ; {{{ custom options
-    (org-roam-directory org-directory)
+    (org-roam-directory (concat org-directory "/roam"))
 
     ; node display in capture/find selector
     (org-roam-node-display-template
@@ -357,18 +370,20 @@
     (require 'org-roam-protocol)
 
     ; {{{ capture templates
-    (cl-flet ((capture-template (key path1 path2)
-      (let ((path (concat (symbol-name path1) "/" (symbol-name path2))))
-        `(,key ,path plain "%?"
-          :target
-            (file+head ,(concat path "/%<%Y.%m.%d>_${slug}.org")
-              "#+date: <%<%Y-%m-%d %a>>\n#+title: ${title}\n#+filetags: ")
-          :immediate-finish t
-          :unnarrowed t))))
+    (cl-flet ((capture-template (key tag &optional narrow_tag)
+      `(,key ,(or narrow_tag tag) plain "%?"
+        :target
+          (file+head ,(concat tag "/%<%Y-%m-%d>_${slug}.org")
+            ,(concat "#+DATE: [%<%Y-%m-%d %a>]\n#+TITLE: ${title}\n#+FILETAGS: :" tag ":"
+                     (when narrow_tag (concat narrow_tag ":"))))
+        :immediate-finish t
+        :jump-to-captured t
+        :unnarrowed t)))
       (setq org-roam-capture-templates
-        `(,(capture-template "s" 'main  'school)
-          ,(capture-template "m" 'main  'other)
-          ,(capture-template "r" 'ref   'other))))
+        `(,(capture-template "s" "school")
+          ,(capture-template "w" "work")
+          ,(capture-template "d" "projects" "dev")
+          ,(capture-template "a" "projects" "art"))))
     ; }}}
 
     ; {{{ node "types"
@@ -384,7 +399,9 @@
 
 ; {{{ org-roam-ui
 (use-package org-roam-ui
-  :after org-roam
+  :defer t
+
+  :commands org-roam-ui-open
 
   :straight
     (:host github :repo "org-roam/org-roam-ui" :branch "main" :files ("*.el" "out"))
@@ -528,54 +545,20 @@
     ; }}}
 ; }}}
 
-; {{{ org-tree-slide
-(use-package org-tree-slide
-  :after (org hide-mode-line)
-
-  :commands
-    org-tree-slide-mode
-    org-tree-slide-move-next-tree
-    org-tree-slide-move-previous-tree
-    org-tree-slide-content
-
-  :hook
-    (org-tree-slide-mode . hide-mode-line-mode)
-    (org-tree-slide-mode . (lambda ()
-      (if (boundp 'my-presentation-active)
-        (progn
-          (makunbound 'my-presentation-active)
-          (text-scale-set 0))
-        (setq my-presentation-active t)
-        (text-scale-set 4))))
-
-  :custom
-    ; {{{ custom options
-    (org-tree-slide-header nil)
-    (org-tree-slide-slide-in-effect nil)
-    (org-tree-slide-never-touch-face t)
-    (org-tree-slide-activate-message "Presentation started")
-    (org-tree-slide-deactivate-message "Quit")
-    (org-tree-slide-subtrees-skipped nil)
-    (org-tree-slide-breadcrumbs "->")
-    ; }}}
-  )
-
-  :init
-    ; {{{ custom keymaps
-    (ldr-defkm 'org-mode-map "os" 'org-tree-slide-mode)
-    (ldr-defkm 'org-tree-slide-mode-map "q" 'org-tree-slide-mode)
-    (ldr-defkm 'org-tree-slide-mode-map "C-SPC" 'org-tree-slide-move-previous-tree)
-    (ldr-defkm 'org-tree-slide-mode-map "SPC" 'org-tree-slide-move-next-tree)
-    ; }}}
-; }}}
-
 ; {{{ org-download
 (use-package org-download
-  :after org
+  :defer t
+
+  :commands
+    org-download-clipboard
+    org-download-yank
+    org-download-image
+    org-download-rename-at-point
+    org-download-delete
 
   :custom
     ; custom options
-    (org-download-image-dir (concat org-directory "/blob/paste"))
+    (org-download-image-dir (concat org-directory "/.blob/org-download"))
     (org-download-heading-lvl nil) ; don't save under heading dirs
     (org-download-abbreviate-filename-function 'expand-file-name) ; absolute paths
 
@@ -587,22 +570,18 @@
     (ldr-defkm 'normal 'org-mode-map "ir" 'org-download-rename-at-point)
     (ldr-defkm 'normal 'org-mode-map "id" 'my-org-download-delete)
 
-  :config
-    ; no annotations
-    (defun org-download-annotate-default (link) "Annotate LINK." "")
-
-    ; deletion for previewed images
     (defun my-org-download-delete ()
       (interactive)
       (org-remove-inline-images (point) (+ 1 (point))) ; unrender preview
       (move-point-visually 1)                          ; move point onto the link body
-      (org-download-delete)))                          ; delete image
+      (org-download-delete))                           ; delete image
 
-    ;; `org-download-after-download-hook' is not provided by org-download.
-    ;; Schedule the annex operation after its output exists, which also covers
-    ;; URL downloads that org-download writes asynchronously.
+  :config
+    ; no annotations
+    (defun org-download-annotate-default (link) "Annotate LINK." "")
+
+    ; this is horrible but idk how else to do it
     (defvar my-org-download-annex--pending (make-hash-table :test #'equal))
-
     (defun my-org-download-annex--when-ready (file attempts)
       (cond
        ((not (file-exists-p file))
@@ -617,12 +596,9 @@
         (remhash file my-org-download-annex--pending)
         (let ((default-directory org-directory)
               (relative-file (file-relative-name file org-directory)))
-          ;; `annex.addunlocked' is set in this repository.  Recent git-annex
-          ;; versions use that setting; `git annex add --unlocked' is invalid.
-          (if (eq 0 (process-file "git" nil nil nil "annex" "add"
-                                  "--" relative-file))
+          (if (eq 0 (process-file "git" nil nil nil "annex" "add" "--" relative-file))
               (message "Added %s to git-annex" relative-file)
-            (message "Could not add %s to git-annex" relative-file))))))
+            (message "Failed adding %s to git-annex" relative-file))))))
 
     (defun my-org-download-annex-file (file)
       "Add FILE to git-annex once org-download has finished writing it."
@@ -639,5 +615,5 @@
     ;; `org-download--image'.  Duplicate notifications are de-duplicated.
     (advice-add 'org-download-insert-link :after
                 (lambda (_link filename)
-                  (my-org-download-annex-file filename)))
+                  (my-org-download-annex-file filename))))
 ; }}}

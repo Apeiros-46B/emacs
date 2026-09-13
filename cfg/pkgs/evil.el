@@ -107,7 +107,7 @@
 
 ; bindings for org-mode
 (use-package evil-org
-  :after org
+  :defer t
   :commands evil-org-mode
 
   :hook

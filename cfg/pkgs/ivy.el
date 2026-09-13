@@ -1,12 +1,18 @@
 ; vim:et
 
+; fd-based file search
+(defun my-counsel-fzf ()
+  (interactive)
+  (let ((process-environment
+         (cons "FZF_DEFAULT_COMMAND=fd --type f --color never" process-environment)))
+    (call-interactively #'counsel-fzf)))
+
 (use-package counsel
   :init
     ; {{{ custom keybindings
     (ldr-defkm "fb" 'counsel-switch-buffer)
     (ldr-defkm "fc" 'counsel-unicode-char)
-    (ldr-defkm "ff" 'counsel-find-file)
-    (ldr-defkm "fF" 'counsel-fzf)
+    (ldr-defkm "ff" 'my-counsel-fzf)
     (ldr-defkm "fh" 'counsel-faces)
     (ldr-defkm "fr" 'counsel-recentf)
     (ldr-defkm "fw" 'counsel-rg))
@@ -14,7 +20,6 @@
     (ldr-defkm "f;" 'counsel-bookmark)
 
     ; org-mode
-    (ldr-defkm "oa"    'counsel-org-entity)
     (ldr-defkm "oe"    'counsel-org-entity)
     (ldr-defkm "oo"    'counsel-org-goto)
     (ldr-defkm "oO"    'counsel-org-goto-all)
