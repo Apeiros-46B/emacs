@@ -12,8 +12,50 @@
           evil-search-module 'evil-search
           evil-ex-search-highlight-all t)
 
+    (setq select-enable-clipboard nil
+          select-enable-primary nil)
+
   :config
     ; {{{ behavior
+    (defun my-copy-to-system-clipboard (text)
+      "Copy TEXT to the system clipboard without changing the kill ring."
+      (gui-set-selection 'CLIPBOARD text))
+
+    (defun my-paste-from-system-clipboard ()
+      "Insert text from the system clipboard without using the kill ring."
+      (interactive)
+      (let ((text (or (ignore-errors (gui-get-selection 'CLIPBOARD 'UTF8_STRING))
+                      (ignore-errors (gui-get-selection 'CLIPBOARD 'STRING)))))
+        (unless (stringp text) (user-error "System clipboard does not contain text"))
+        (insert text)))
+
+    (defun my-paste-from-system-clipboard-after-point ()
+      "Insert text from the system clipboard after the Evil cursor."
+      (interactive)
+      (unless (eolp) (forward-char 1))
+      (my-paste-from-system-clipboard))
+
+    (evil-define-operator my-evil-yank-to-system-clipboard (beg end type)
+      "Copy the Evil range from BEG to END to the system clipboard."
+      :move-point nil
+      :repeat nil
+      (interactive "<R>")
+      (let ((text
+             (pcase type
+               ((or 'line 'screen-line)
+                (let ((text (filter-buffer-substring beg end)))
+                  (if (or (zersp (length text))
+                          (= (aref text (1- (length text))) ?\n))
+                      text
+                    (concat text "\n"))))
+               ('block
+                (let ((lines (list nil)))
+                  (evil-apply-on-rectangle #'extract-rectangle-line
+                                           beg end lines)
+                  (mapconcat #'identity (nreverse (cdr lines)) "\n")))
+               (_ (filter-buffer-substring beg end)))))
+        (my-copy-to-system-clipboard text)))
+
     (evil-define-motion my-evil-visual-next-line (count)
       :type exclusive
       (if (eq evil-visual-selection 'char)
@@ -32,7 +74,11 @@
     (defkm :states 'normal "k" #'evil-previous-visual-line)
     (defkm :states 'visual "j" #'my-evil-visual-next-line)
     (defkm :states 'visual "k" #'my-evil-visual-previous-line)
-    (defkm :states 'insert "C-S-v" "C-r \"")
+
+    (defkm :states 'insert "C-S-v" #'my-paste-from-system-clipboard)
+    (defkm :states 'normal "C-S-v" #'my-paste-from-system-clipboard-after-point)
+    (ldr-defkm "y" #'my-evil-yank-to-system-clipboard)
+    (define-key minibuffer-local-map (kbd "C-S-v") #'my-paste-from-system-clipboard)
 
     ; replace lost C-u
     (defkm "M-u" #'universal-argument)

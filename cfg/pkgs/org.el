@@ -41,12 +41,11 @@
     (ldr-defkm 'org-mode-map "SPC" 'org-ctrl-c-ctrl-c)
 
     ; link creation
-    (ldr-defkm "ol" 'org-store-link)
-    (ldr-defkm 'org-mode-map "oi" 'org-insert-link)
+    (ldr-defkm "oy" 'org-store-link)
+    (ldr-defkm 'org-mode-map "op" 'org-insert-link)
 
-    (ldr-defkm 'org-mode-map "op" 'org-priority)
-    (ldr-defkm 'org-mode-map "oL" 'org-latex-preview)
-    (ldr-defkm 'org-mode-map "oI" 'org-toggle-inline-images)
+    (ldr-defkm 'org-mode-map "ol" 'org-latex-preview)
+    (ldr-defkm 'org-mode-map "oi" 'my-org-toggle-inline-previews)
 
     (ldr-defkm 'org-mode-map "od" 'my-org-insert-date)
     (ldr-defkm 'org-mode-map "ot" 'my-org-insert-datetime)
@@ -58,10 +57,12 @@
     (defkm 'normal 'org-agenda-mode-map "RET" 'org-agenda-goto)
     (defkm '(normal visual) 'org-mode-map "C-SPC" 'org-toggle-checkbox)
     (defkm '(normal visual) 'org-mode-map "gt" 'org-todo)
+    (defkm '(normal visual) 'org-mode-map "gp" 'org-priority)
 
     ; folding/cycling
     ; I don't use the evil-*-fold commands because they
     ; don't leave empty lines between folded headers
+    ; TODO: ^above comment is stale, these don't leave empty lines either
     (defkm 'normal 'org-mode-map "za" 'org-cycle)
     (defkm 'normal 'org-mode-map "zA" 'org-global-cycle)
     (defkm 'normal 'org-mode-map "zM" 'org-global-cycle)
@@ -78,12 +79,28 @@
     (ldr-defkm 'normal 'org-mode-map "h" 'org-toggle-heading)
     ; }}}
 
+    (defun my-org-toggle-inline-previews ()
+      "Toggle image previews in the current section or whole document."
+      (interactive)
+      (pcase-let ((`(,beg . ,end)
+                   (if (org-before-first-heading-p)
+                       (cons (point-min) (point-max))
+                     (save-excursion
+                       (org-back-to-heading t)
+                       (cons (point) (org-entry-end-position))))))
+        (if (org-link-preview--get-overlays beg end)
+            (org-link-preview-clear beg end)
+          (org-link-preview-region t t beg end))))
+
   :custom
     ; {{{ custom options
     ; {{{ functionality
     (org-directory (directory-file-name (file-truename "~/org/")))
     (org-agenda-files `(,(concat org-directory "/agenda")))
     (org-attach-id-dir (concat org-directory "/.blob/org-attach"))
+    (org-attach-id-to-path-function-list '(identity))
+    (org-attach-preferred-new-method 'id)
+    (org-attach-use-inheritance nil)
 
     ; don't clutter my fs with latex image cache
     (org-preview-latex-image-directory (get-cfg-path "cache/ltximg/"))
@@ -121,7 +138,8 @@
 
     (org-image-actual-width nil)
     (org-image-max-width 660) ; 3/4 * fillcolumn(88) * charwidth(10)
-    (org-startup-with-inline-images t)
+    (org-startup-with-inline-images nil)
+    (org-link-preview-include-descriptive t)
     ; }}}
 
     ; {{{ visuals
@@ -194,18 +212,32 @@
     ; }}}
 
     ; {{{ org-attach
-    ; TODO: real config of org-attach
     (require 'org-attach)
 
-    (defun my-org-attach-annex-files ()
-      "Add the current heading's attachments to git-annex."
-      (let ((dir (org-attach-dir)))
+    (defun my-org-annex-add-file (file)
+      "Add FILE to git-annex when it is a regular file under `org-directory`."
+      (let ((file (expand-file-name file)))
+        (when (and (file-regular-p file)
+                   (file-in-directory-p file org-directory))
+          (let ((default-directory org-directory)
+                (relative-file (file-relative-name file org-directory)))
+            (if (eq 0 (process-file "git" nil nil nil "annex" "add" "--" relative-file))
+                (message "Added %s to git-annex" relative-file)
+              (message "Failed adding %s to git-annex" relative-file))))))
+
+    (defun my-org-attach-annex-files (&optional dir)
+      "Add files in DIR to git-annex. DIR is supplied by `org-attach-after-change-hook`."
+      (let ((dir (or dir (org-attach-dir))))
         (when (file-directory-p dir)
           (dolist (file (directory-files dir t directory-files-no-dot-files-regexp))
             (when (file-regular-p file)
-              (my-org-download-annex-file file))))))
+              (my-org-annex-add-file file))))))
 
     (add-hook 'org-attach-after-change-hook #'my-org-attach-annex-files)
+    ;; `org-attach-buffer` runs the hook before it writes the attachment.
+    ;; Run once more after it returns so buffer attachments are included.
+    (defun my-org-attach-annex-buffer-after (&rest _) (my-org-attach-annex-files))
+    (advice-add 'org-attach-buffer :after #'my-org-attach-annex-buffer-after)
     ; }}}
 
     ; {{{ capture log
@@ -558,7 +590,7 @@
 
   :custom
     ; custom options
-    (org-download-image-dir (concat org-directory "/.blob/org-download"))
+    (org-download-method 'directory)
     (org-download-heading-lvl nil) ; don't save under heading dirs
     (org-download-abbreviate-filename-function 'expand-file-name) ; absolute paths
 
@@ -580,6 +612,22 @@
     ; no annotations
     (defun org-download-annotate-default (link) "Annotate LINK." "")
 
+    (defun my-org-download-link-format (filename)
+      "Format FILENAME as an absolute file link labelled by its basename."
+      (format "[[file:%s][%s]]\n"
+              (org-link-escape
+               (funcall org-download-abbreviate-filename-function filename))
+              (org-link-escape (file-name-nondirectory filename))))
+
+    (setq org-download-link-format-function #'my-org-download-link-format)
+
+    (defun my-org-download-id-directory (&rest _)
+      "Return the ID-specific directory for the current Org heading's downloads."
+      (expand-file-name
+       (org-id-get-create)
+       (expand-file-name ".blob/org-download/" org-directory)))
+    (advice-add 'org-download--dir-1 :override #'my-org-download-id-directory)
+
     ; this is horrible but idk how else to do it
     (defvar my-org-download-annex--pending (make-hash-table :test #'equal))
     (defun my-org-download-annex--when-ready (file attempts)
@@ -594,11 +642,7 @@
                        file (1- attempts))))
        (t
         (remhash file my-org-download-annex--pending)
-        (let ((default-directory org-directory)
-              (relative-file (file-relative-name file org-directory)))
-          (if (eq 0 (process-file "git" nil nil nil "annex" "add" "--" relative-file))
-              (message "Added %s to git-annex" relative-file)
-            (message "Failed adding %s to git-annex" relative-file))))))
+        (my-org-annex-add-file file))))
 
     (defun my-org-download-annex-file (file)
       "Add FILE to git-annex once org-download has finished writing it."
@@ -611,8 +655,6 @@
     (advice-add 'org-download--image :after
                 (lambda (_link filename)
                   (my-org-download-annex-file filename)))
-    ;; This also covers the base64 drag-and-drop path, which bypasses
-    ;; `org-download--image'.  Duplicate notifications are de-duplicated.
     (advice-add 'org-download-insert-link :after
                 (lambda (_link filename)
                   (my-org-download-annex-file filename))))

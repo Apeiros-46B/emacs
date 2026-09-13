@@ -35,6 +35,8 @@
 (setq inhibit-startup-echo-area-message t)
 (setq server-client-instructions nil)
 (add-to-list 'debug-ignored-errors "Kill ring is empty")
+(add-to-list 'debug-ignored-errors "Bad url:")
+(add-to-list 'debug-ignored-errors "Unknown URL scheme:")
 
 ; Monday is the start of the week.
 (setq calendar-week-start-day 1)
@@ -47,3 +49,19 @@
 
 ; use minibuffer for pinentry
 (setq epa-pinentry-mode 'loopback)
+
+; {{{ close standalone attachment viewers instead of just burying bufs
+(defun my-kill-viewer-buffer ()
+  "Close the current viewer buffer and restore the previous window contents."
+  (interactive)
+  (let ((buffer (current-buffer)))
+    (quit-window)
+    (when (buffer-live-p buffer)
+      (kill-buffer buffer))))
+
+(with-eval-after-load 'image-mode
+  (defkm 'normal 'image-mode-map "q" #'my-kill-viewer-buffer))
+
+(with-eval-after-load 'doc-view
+  (defkm 'normal 'doc-view-mode-map "q" #'my-kill-viewer-buffer))
+; }}}

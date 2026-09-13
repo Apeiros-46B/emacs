@@ -10,9 +10,9 @@
 (use-package counsel
   :init
     ; {{{ custom keybindings
+    (ldr-defkm "ff" 'my-counsel-fzf)
     (ldr-defkm "fb" 'counsel-switch-buffer)
     (ldr-defkm "fc" 'counsel-unicode-char)
-    (ldr-defkm "ff" 'my-counsel-fzf)
     (ldr-defkm "fh" 'counsel-faces)
     (ldr-defkm "fr" 'counsel-recentf)
     (ldr-defkm "fw" 'counsel-rg))

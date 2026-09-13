@@ -30,12 +30,6 @@
 (scroll-bar-mode -1)
 (setq-default mode-line-format nil)
 
-; config reloading
-(global-set-key (kbd "<f5>")
-  (lambda ()
-    (interactive)
-    (load-file user-init-file)))
-
 (defun get-cfg-path (&rest paths)
   (apply #'concat (file-truename user-emacs-directory) paths))
 (defun loadcfg (file)
@@ -166,7 +160,7 @@
   :keymaps 'override)
 
 (general-create-definer ldr-defkm
-  :states '(normal insert emacs)
+  :states '(normal visual insert emacs)
   :keymaps 'override
   :prefix "SPC"
   :non-normal-prefix "M-SPC")
