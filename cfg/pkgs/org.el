@@ -586,13 +586,13 @@
     org-download-yank
     org-download-image
     org-download-rename-at-point
-    org-download-delete
+    my-org-download-delete
 
   :custom
     ; custom options
     (org-download-method 'directory)
     (org-download-heading-lvl nil) ; don't save under heading dirs
-    (org-download-abbreviate-filename-function 'expand-file-name) ; absolute paths
+    (org-download-abbreviate-filename-function #'my-org-download-abbrev-to-org)
 
   :init
     ; custom keymaps
@@ -602,18 +602,20 @@
     (ldr-defkm 'normal 'org-mode-map "ir" 'org-download-rename-at-point)
     (ldr-defkm 'normal 'org-mode-map "id" 'my-org-download-delete)
 
-    (defun my-org-download-delete ()
-      (interactive)
-      (org-remove-inline-images (point) (+ 1 (point))) ; unrender preview
-      (move-point-visually 1)                          ; move point onto the link body
-      (org-download-delete))                           ; delete image
-
   :config
     ; no annotations
     (defun org-download-annotate-default (link) "Annotate LINK." "")
 
+    ; {{{ ugh
+    (defun my-org-download-abbrev-to-org (filename)
+      "Format FILENAME as a path rooted at `org-directory'."
+      (concat
+       (file-name-as-directory
+        (abbreviate-file-name (expand-file-name org-directory)))
+       (file-relative-name (expand-file-name filename) org-directory)))
+
     (defun my-org-download-link-format (filename)
-      "Format FILENAME as an absolute file link labelled by its basename."
+      "Format FILENAME as an Org-rooted file link labelled by its basename."
       (format "[[file:%s][%s]]\n"
               (org-link-escape
                (funcall org-download-abbreviate-filename-function filename))
@@ -657,5 +659,29 @@
                   (my-org-download-annex-file filename)))
     (advice-add 'org-download-insert-link :after
                 (lambda (_link filename)
-                  (my-org-download-annex-file filename))))
+                  (my-org-download-annex-file filename)))
+
+    (defun my-org-download-delete ()
+      "Delete the org-download file link at point and its local file.
+      Unlike `org-download-delete`, this expands the `~/org` paths written by
+      `my-org-download-link-format` and works when point is on a link description."
+      (interactive)
+      (let ((link (org-element-context)))
+        (unless (and (eq (org-element-type link) 'link)
+                     (string= (org-element-property :type link) "file"))
+          (user-error "Not on a file link"))
+        (let* ((beg (org-element-property :begin link))
+               (end (org-element-property :end link))
+               (file (expand-file-name
+                      (org-link-unescape (org-element-property :path link))))
+               (download-dir (expand-file-name ".blob/org-download/" org-directory)))
+          (unless (file-in-directory-p file download-dir)
+            (user-error "Not an org-download file: %s" file))
+          (org-link-preview-clear beg end)
+          (when (file-exists-p file)
+            (delete-file file))
+          (delete-region beg end)
+          (when (and (eolp) (not (eobp)))
+            (delete-char 1))))))
+    ; }}}
 ; }}}
