@@ -69,11 +69,9 @@
     (defkm 'normal 'org-mode-map "zR" 'org-fold-show-all)
     (defkm 'normal 'org-mode-map "zx" 'org-cycle-set-startup-visibility)
 
-    ; promotion, demotion, and swapping
+    ; promotion and demotion
     (defkm 'insert 'org-mode-map "C-t" 'org-demote-subtree)
     (defkm 'insert 'org-mode-map "C-d" 'org-promote-subtree)
-    (defkm 'insert 'org-mode-map "C-j" 'org-move-subtree-down)
-    (defkm 'insert 'org-mode-map "C-k" 'org-move-subtree-up)
 
     ; misc
     (ldr-defkm 'normal 'org-mode-map "h" 'org-toggle-heading)
@@ -514,7 +512,7 @@
 
     ; {{{ custom todo and priority faces
     (org-modern-todo-faces
-      `(("TODD"      :foreground ,(getcol 'bg1)   :background ,(getcol 'yellow))
+      `(("TODO"      :foreground ,(getcol 'bg1)   :background ,(getcol 'yellow))
         ("EXEC"      :foreground ,(getcol 'bg1)   :background ,(getcol 'red))
         ("WAIT"      :foreground ,(getcol 'bg1)   :background ,(getcol 'blue))
         ("PERM"      :foreground ,(getcol 'bg1)   :background ,(getcol 'purple))
