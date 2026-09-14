@@ -1,3 +1,4 @@
-- [ ] org frontmatter face + hl-line/visual overrides org-modern pill faces
 - [ ] org-modern table horizontal separators have a tall empty space, ideally it should shrink to just the separator-sized line (like older versions of org-modern), if that's not possible it should center the horizontal line rather than it being skewed to the top
+- [ ] probably should have a thing for listing out all journal entries in ivy with title and date
+- [ ] probably should have a better capture searcher rather than just relying on rg
 - [ ] android config
