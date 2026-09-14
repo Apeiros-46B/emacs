@@ -104,17 +104,30 @@
   (seq-find (lambda (item) (memq item my-org-modern-pill-faces))
             (ensure-list face)))
 
+(defun my-org-modern-pill-inline-attribute (face attribute)
+  "Return ATTRIBUTE from an inline face specification in FACE, if any."
+  (seq-some (lambda (item)
+              (when (and (listp item) (keywordp (car item)))
+                (plist-get item attribute)))
+            (ensure-list face)))
+
 (defun my-org-modern-pill-overlay-face (position face)
   (let* ((pill-face (or (my-org-modern-pill-face face) 'org-modern-label))
-         (box (copy-tree (face-attribute 'org-modern-label :box nil t))))
+         (box (copy-tree (face-attribute 'org-modern-label :box nil t)))
+         ;; `org-modern-todo-faces' produces inline face specifications,
+         ;; followed by `org-modern-label'.  The inline values must win.
+         (foreground (or (my-org-modern-pill-inline-attribute face :foreground)
+                         (face-attribute pill-face :foreground nil t)))
+         (background (or (my-org-modern-pill-inline-attribute face :background)
+                         (face-attribute pill-face :background nil t))))
     (setf (plist-get box :color)
           (my-org-modern-pill-padding-background position))
     ;; An Org keyword/frontmatter face can otherwise override the colours
     ;; inherited by FACE.  Put the resolved colours in the overlay itself,
     ;; while leaving height and the other face attributes untouched.
     (cons `(:box ,box
-            :foreground ,(face-attribute pill-face :foreground nil t)
-            :background ,(face-attribute pill-face :background nil t))
+            :foreground ,foreground
+            :background ,background)
           (ensure-list face))))
 
 (defun my-org-modern-pill-face-p (face)

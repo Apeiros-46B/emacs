@@ -512,9 +512,9 @@
 
     ; {{{ custom todo and priority faces
     (org-modern-todo-faces
-      `(("TODO"      :foreground ,(getcol 'bg1)   :background ,(getcol 'yellow))
+      `(("TODO"      :foreground ,(getcol 'bg1)   :background ,(getcol 'green))
         ("EXEC"      :foreground ,(getcol 'bg1)   :background ,(getcol 'red))
-        ("WAIT"      :foreground ,(getcol 'bg1)   :background ,(getcol 'blue))
+        ("WAIT"      :foreground ,(getcol 'bg1)   :background ,(getcol 'yellow))
         ("PERM"      :foreground ,(getcol 'bg1)   :background ,(getcol 'purple))
         ("DONE"      :foreground ,(getcol 'green) :background ,(getcol 'bg-green))))
 
