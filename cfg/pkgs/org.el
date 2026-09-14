@@ -10,19 +10,11 @@
     my-org-goto-agenda-dir
     my-org-open-current-journal
     my-org-close-clean-journal-buffers
-    my-org-insert-date
-    my-org-insert-datetime
-    my-org-insert-datetime-now
 
   :hook
     ; use slab font in org files
     (org-mode . (lambda ()
       (face-remap-add-relative 'default :family (face-attribute 'nano-serif :family))))
-
-    ; skip subtree when folding/cycling
-    (org-cycle . (lambda (state)
-      (when (eq state 'children)
-        (setq org-cycle-subtree-status 'subtree))))
 
     ; override the evil-org-mode keymaps
     (evil-org-mode . (lambda ()
@@ -59,15 +51,7 @@
     (defkm '(normal visual) 'org-mode-map "gt" 'org-todo)
     (defkm '(normal visual) 'org-mode-map "gp" 'org-priority)
 
-    ; folding/cycling
-    ; I don't use the evil-*-fold commands because they
-    ; don't leave empty lines between folded headers
-    ; TODO: ^above comment is stale, these don't leave empty lines either
-    (defkm 'normal 'org-mode-map "za" 'org-cycle)
-    (defkm 'normal 'org-mode-map "zA" 'org-global-cycle)
-    (defkm 'normal 'org-mode-map "zM" 'org-global-cycle)
-    (defkm 'normal 'org-mode-map "zR" 'org-fold-show-all)
-    (defkm 'normal 'org-mode-map "zx" 'org-cycle-set-startup-visibility)
+    (defkm 'org-mode-map "M-RET" #'my-org-meta-return)
 
     ; promotion and demotion
     (defkm 'insert 'org-mode-map "C-t" 'org-demote-subtree)
@@ -76,19 +60,6 @@
     ; misc
     (ldr-defkm 'normal 'org-mode-map "h" 'org-toggle-heading)
     ; }}}
-
-    (defun my-org-toggle-inline-previews ()
-      "Toggle image previews in the current section or whole document."
-      (interactive)
-      (pcase-let ((`(,beg . ,end)
-                   (if (org-before-first-heading-p)
-                       (cons (point-min) (point-max))
-                     (save-excursion
-                       (org-back-to-heading t)
-                       (cons (point) (org-entry-end-position))))))
-        (if (org-link-preview--get-overlays beg end)
-            (org-link-preview-clear beg end)
-          (org-link-preview-region t t beg end))))
 
   :custom
     ; {{{ custom options
@@ -164,6 +135,7 @@
 
     ; open links in current pane
     (setf (alist-get 'file org-link-frame-setup) 'find-file)
+
     ; }}}
 
     ; {{{ custom faces
@@ -184,6 +156,31 @@
 
     (set-face-attribute 'org-link    nil :foreground (getcol 'purple) :underline t)
     (set-face-attribute 'org-list-dt nil :foreground (getcol 'green))
+    ; }}}
+
+    ; {{{ misc custom functions
+    ; toggle img preview in current section or whole document, like old org behavior
+    (defun my-org-toggle-inline-previews ()
+      (interactive)
+      (pcase-let ((`(,beg . ,end)
+                   (if (org-before-first-heading-p)
+                       (cons (point-min) (point-max))
+                     (save-excursion
+                       (org-back-to-heading t)
+                       (cons (point) (org-entry-end-position))))))
+        (if (org-link-preview--get-overlays beg end)
+            (org-link-preview-clear beg end)
+          (org-link-preview-region t t beg end))))
+
+    ; better empty line handling than default meta-return
+    (defun my-org-meta-return ()
+      (interactive)
+      (let ((current-level (org-current-level)))
+        (call-interactively #'org-meta-return)
+        (when (and current-level (org-at-heading-p)
+                   (= current-level (org-current-level)))
+          (org-N-empty-lines-before-current
+           (if (= current-level 1) 2 1)))))
     ; }}}
 
     ; {{{ org-agenda
@@ -248,11 +245,10 @@
       (make-directory my-org-capture-dir t)
       (expand-file-name (format-time-string "%Y-%m.org") my-org-capture-dir))
 
-    (cl-flet ((task-capture-template (key tag &optional narrow_tag)
-      `(,key ,(concat (or narrow_tag tag) " (task)") entry
-        (file+headline ,(concat (car org-agenda-files) "/" tag ".org") "tasks")
-        ,(concat "* TODO %? :" tag ":" (when narrow_tag (concat narrow_tag ":"))
-                 "\nDEADLINE: ")
+    (cl-flet ((task-capture-template (key category &optional tag)
+      `(,key ,(concat (or tag category) " (task)") entry
+        (file ,(concat (car org-agenda-files) "/" category ".org"))
+        ,(concat "* TODO %?" (when tag (concat " :" tag ":")) "\nDEADLINE: ")
         :empty-lines 2)))
       (setq org-capture-templates
         `(("c" "capture log" entry (file my-org-capture-current-file)
@@ -326,9 +322,10 @@
         (forward-char 1)))
 
     (defun my-org-agenda-file-p ()
-      (and buffer-file-name
-           (file-in-directory-p (expand-file-name buffer-file-name)
-                                (expand-file-name "agenda/" org-directory))))
+      (let ((file (buffer-file-name (or (buffer-base-buffer) (current-buffer)))))
+        (and file
+             (file-in-directory-p (expand-file-name file)
+                                  (expand-file-name "agenda/" org-directory)))))
 
     (defun my-org-insert-timestamp (time with-time)
       (my-org-move-after-evil-point)
@@ -404,7 +401,7 @@
       `(,key ,(or narrow_tag tag) plain "%?"
         :target
           (file+head ,(concat tag "/%<%Y-%m-%d>_${slug}.org")
-            ,(concat "#+DATE: [%<%Y-%m-%d %a>]\n#+TITLE: ${title}\n#+FILETAGS: :" tag ":"
+            ,(concat "#+DATE: [%<%Y-%m-%d %a %H:%M>]\n#+TITLE: ${title}\n#+FILETAGS: :" tag ":"
                      (when narrow_tag (concat narrow_tag ":"))))
         :immediate-finish t
         :jump-to-captured t
@@ -528,7 +525,7 @@
   :config
     ; {{{ other custom faces
     (set-face-attribute 'org-modern-symbol nil :foreground (getcol 'fg2))
-    (set-face-attribute 'org-modern-label nil :foreground (getcol 'fg2) :height 0.9)
+    (set-face-attribute 'org-modern-label nil :foreground (getcol 'fg2) :height 0.8)
 
     (set-face-attribute 'org-modern-tag nil :foreground (getcol 'fg2))
 

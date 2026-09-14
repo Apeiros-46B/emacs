@@ -35,6 +35,7 @@
 (setq inhibit-startup-echo-area-message t)
 (setq server-client-instructions nil)
 (add-to-list 'debug-ignored-errors "Kill ring is empty")
+(add-to-list 'debug-ignored-errors "No search pattern")
 (add-to-list 'debug-ignored-errors "Bad url:")
 (add-to-list 'debug-ignored-errors "Unknown URL scheme:")
 

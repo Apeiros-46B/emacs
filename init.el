@@ -72,7 +72,7 @@
 ; }}}
 
 ; {{{ color palettes
-(setq my-palette 'everforest)
+(setq my-palette 'elysium)
 
 (pcase my-palette
   ; {{{ elysium

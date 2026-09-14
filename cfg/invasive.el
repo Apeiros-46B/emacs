@@ -114,26 +114,15 @@
 (defun my-org-modern-pill-overlay-face (position face)
   (let* ((pill-face (or (my-org-modern-pill-face face) 'org-modern-label))
          (box (copy-tree (face-attribute 'org-modern-label :box nil t)))
-         ;; `org-modern-todo-faces' produces inline face specifications,
-         ;; followed by `org-modern-label'.  The inline values must win.
+         ;; inline colors from `org-modern-todo-faces' must win over named faces.
          (foreground (or (my-org-modern-pill-inline-attribute face :foreground)
                          (face-attribute pill-face :foreground nil t)))
          (background (or (my-org-modern-pill-inline-attribute face :background)
                          (face-attribute pill-face :background nil t))))
     (setf (plist-get box :color)
           (my-org-modern-pill-padding-background position))
-    ;; An Org keyword/frontmatter face can otherwise override the colours
-    ;; inherited by FACE.  Put the resolved colours in the overlay itself,
-    ;; while leaving height and the other face attributes untouched.
-    (cons `(:box ,box
-            :foreground ,foreground
-            :background ,background)
-          (ensure-list face))))
-
-(defun my-org-modern-pill-face-p (face)
-  (seq-some (lambda (item)
-              (memq item my-org-modern-pill-faces))
-            (ensure-list face)))
+    ;; repeating the text face here applies its relative height twice.
+    `(:box ,box :foreground ,foreground :background ,background)))
 
 (defun my-org-modern-pill-overlays (beg end)
   (dolist (overlay (overlays-in beg end))
@@ -144,7 +133,7 @@
     (while (< (point) end)
       (let* ((face (get-text-property (point) 'face))
              (next (next-single-property-change (point) 'face nil end)))
-        (when (my-org-modern-pill-face-p face)
+        (when (my-org-modern-pill-face face)
           (let ((overlay (make-overlay (point) next)))
             (overlay-put overlay 'my-org-modern-pill-overlay t)
             (overlay-put overlay 'modification-hooks
@@ -158,9 +147,14 @@
   (when after
     (delete-overlay overlay)))
 
-(defun my-org-modern-fontify-pill-overlays (beg end &rest _)
-  (when (my-org-modern-pill-buffer-p)
-    (my-org-modern-pill-overlays beg end)))
+(defun my-org-modern-fontify-pill-overlays (fontify beg end &rest args)
+  (let ((result (apply fontify beg end args)))
+    (when (my-org-modern-pill-buffer-p)
+      ;; Font Lock can refontify whole lines beyond the requested region.
+      (if (eq (car-safe result) 'jit-lock-bounds)
+          (my-org-modern-pill-overlays (cadr result) (cddr result))
+        (my-org-modern-pill-overlays beg end)))
+    result))
 
 (defun my-org-modern-refontify-pills (&optional buffer)
   "Immediately fontify BUFFER and rebuild its org-modern pill overlays."
@@ -187,7 +181,7 @@
                       (overlay-start overlay)
                       (get-text-property (overlay-start overlay) 'face)))))))
 
-(advice-add 'font-lock-fontify-region :after
+(advice-add 'font-lock-fontify-region :around
             #'my-org-modern-fontify-pill-overlays)
 (advice-add 'org-time-stamp :after #'my-org-modern-refontify-timestamp)
 (add-hook 'org-capture-mode-hook #'my-org-modern-refontify-pills)

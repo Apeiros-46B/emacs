@@ -32,10 +32,10 @@
 ; font settings
 (setq nano-fonts-use t)
 (custom-set-faces
-  '(nano-mono     ((t (:family "Iosevka Custom" :height 125 :weight normal))))
+  '(nano-mono     ((t (:family "IosevkaTerm NFM" :height 125 :weight normal))))
   '(nano-mono-alt ((t (:inherit nano-mono))))
   '(nano-sans     ((t (:inherit nano-mono))))
-  '(nano-serif    ((t (:family "Iosevka Custom Manuscript" :height 125 :weight normal))))
+  '(nano-serif    ((t (:family "IosevkaTerm NFM" :height 125 :weight normal))))
   '(nano-italic   ((t (:inherit nano-mono)))))
 
 (if my-lightmode (nano-light) (nano-dark))

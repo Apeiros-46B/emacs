@@ -44,7 +44,7 @@
              (pcase type
                ((or 'line 'screen-line)
                 (let ((text (filter-buffer-substring beg end)))
-                  (if (or (zersp (length text))
+                  (if (or (zerop (length text))
                           (= (aref text (1- (length text))) ?\n))
                       text
                     (concat text "\n"))))
@@ -161,6 +161,13 @@
     (org-agenda-mode . evil-org-mode)
 
   :config
+    (setq evil-org-special-o/O nil)
+    (evil-define-key '(normal insert) 'evil-org-mode
+      (kbd "<C-return>") (lambda ()
+        (interactive)
+        (org-insert-item (org-at-item-checkbox-p)))
+      (kbd "<M-return>") #'org-ctrl-c-ret)
+
     (require 'evil-org-agenda)
     (evil-org-agenda-set-keys))
 
